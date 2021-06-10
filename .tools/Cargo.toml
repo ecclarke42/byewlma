@@ -1,0 +1,19 @@
+[package]
+name = "tools"
+version = "0.1.0"
+authors = ["Elliott Clarke <elliott.clarke.ext@siemens-energy.com>"]
+edition = "2018"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "icon-gen"
+test = false
+bench = false
+
+[dependencies]
+lazy_static = "*"
+regex = "*"
+scraper = "*"
+heck = "*"

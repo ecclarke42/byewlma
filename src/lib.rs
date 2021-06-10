@@ -1,6 +1,6 @@
-mod attributes;
+mod helpers;
 
-pub use attributes::*;
+pub use helpers::*;
 
 pub mod components {
     mod prelude {
@@ -8,4 +8,6 @@ pub mod components {
     }
 
     pub mod button;
+    pub mod icon;
+    mod icon_kind;
 }

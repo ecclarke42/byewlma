@@ -1,7 +1,7 @@
-// mod color;
+mod color;
 // mod size;
 
-// pub use color::Color;
+pub use color::*;
 
 /// Return the classes for some type of attribute
 pub trait Attribute {
