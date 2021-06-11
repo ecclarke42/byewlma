@@ -1,7 +1,5 @@
 use crate::components::prelude::*;
 use crate::helpers::Color;
-use std::convert::AsRef;
-use strum::AsRefStr;
 
 pub use super::icon_kind::IconKind;
 
@@ -12,8 +10,8 @@ pub struct Icon {
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct IconProps {
     /// Either an IconKind or a tuple (IconKind, IconKind) to indicate stacked icons
-    pub kind: IconStack,
-
+    pub kind: IconKind,
+    // pub kind: IconStack,
     #[prop_or_default]
     pub color: Option<Color>,
 
@@ -121,6 +119,7 @@ impl Component for Icon {
     }
 
     fn view(&self) -> Html {
+        // TODO
         // match (self.props.rotate, self.props.flip) {
         //     (Some(rotate), Some(flip)) => {}
 
@@ -131,16 +130,69 @@ impl Component for Icon {
         //     (None, None) => {}
         // }
 
-        match self.props.kind {
-            IconStack::Single(kind) => {}
+        // match self.props.kind {
+        //     IconStack::Single(kind) => {}
 
-            IconStack::Stacked { bottom, top } => {}
-        }
+        //     IconStack::Stacked { bottom, top } => {}
+        // }
 
-        if let Some(text) = &self.props.text {
-            html! {}
-        } else {
-            html! {}
+        // if let Some(text) = &self.props.text {
+        //     html! {}
+        // } else {
+        //     html! {}
+        // }
+
+        html! {
+            <span class="icon">
+                <i class={classes!("fas", self.props.kind.name())}/>
+            </span>
         }
     }
 }
+
+// pub type IconText = Pure<PureIconText>;
+
+// #[derive(Debug, Default, PartialEq, Clone, Properties)]
+// pub struct PureIconText {
+//     #[prop_or_default]
+//     pub id: Option<String>,
+
+//     #[prop_or_default]
+//     pub class: Classes,
+
+//     #[prop_or_default]
+//     pub style: Option<String>,
+
+//     #[prop_or_default]
+//     pub inline: bool,
+
+//     #[prop_or_default]
+//     children: ChildrenWithProps<IconTextChild>,
+// }
+
+// #[derive(Debug, Clone)]
+// pub enum IconTextChild {
+//     Icon(Icon),
+//     Text(String),
+// }
+
+// impl From<Icon> for IconTextChild {
+//     fn from(icon: Icon) -> Self {
+//         IconTextChild::Icon(icon)
+//     }
+// }
+
+// impl From<String> for IconTextChild {
+//     fn from(s: String) -> Self {
+//         IconTextChild::Text(s)
+//     }
+// }
+
+// impl From<IconTextChild> for Html {
+//     fn from(child: IconTextChild) -> Self {
+//         match child {
+//             IconTextChild::Icon(icon) => icon.into(),
+//             IconTextChild::Text(s) => s.into(),
+//         }
+//     }
+// }

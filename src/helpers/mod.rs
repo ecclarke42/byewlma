@@ -1,8 +1,8 @@
 mod color;
-// mod size;
+mod size;
 
 pub use color::*;
-
+pub use size::*;
 /// Return the classes for some type of attribute
 pub trait Attribute {
     fn as_classes(&self) -> yew::html::Classes;

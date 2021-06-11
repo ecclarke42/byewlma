@@ -25,6 +25,10 @@ pub struct MenuItem {
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuProps {
+    /// Css Classes to pass along to the root menu element
+    #[prop_or_default]
+    pub class: Classes,
+
     #[prop_or_default]
     pub children: ChildrenWithProps<MenuSection>,
 }
@@ -51,12 +55,19 @@ impl Component for Menu {
     }
 
     fn view(&self) -> Html {
-        html! { <aside class="menu">{ for self.props.children.iter() }</aside> }
+        let mut class = self.props.class.clone();
+        class.push("menu");
+        html! { <aside class={class}>{ for self.props.children.iter() }</aside> }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuSectionProps {
+    /// Css Classes to pass along to the menu section's <ul> list
+    /// Classes can be directly passed to the label element when creating it
+    #[prop_or_default]
+    pub class: Classes,
+
     #[prop_or_default]
     pub label: Option<Html>,
 
@@ -114,6 +125,9 @@ pub struct MenuItemProps {
     #[prop_or_default]
     pub active: bool,
 
+    #[prop_or_default]
+    pub on_click: Option<Callback<()>>,
+
     pub label: Html,
 
     #[prop_or_default]
@@ -147,9 +161,10 @@ impl Component for MenuItem {
         } else {
             html! {}
         };
+        let onclick = self.props.on_click.as_ref().map(|cb| cb.reform(|_| ()));
         html! {
             <li>
-                <a class={if self.props.active {"is-active"} else {""}}>
+                <a class={if self.props.active {"is-active"} else {""}} onclick={onclick}>
                 { self.props.label.clone() }
                 </a>
                 { children }

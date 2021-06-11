@@ -1,8 +1,57 @@
 use crate::components::prelude::*;
 
-// https://bulma.io/documentation/elements/button/
-pub struct Button {
-    props: ButtonProps,
+/// Bulma [Button](https://bulma.io/documentation/elements/button/) Element
+pub type Button = Pure<PureButton>;
+pub type Type = ButtonType;
+pub type Color = ButtonColor;
+
+#[derive(Debug, Default, PartialEq, Clone, Properties)]
+pub struct PureButton {
+    // Standard Props
+    #[prop_or_default]
+    pub id: Option<String>,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<String>,
+
+    #[prop_or_default]
+    pub(crate) children: Children,
+
+    // Button props
+    #[prop_or_default]
+    pub tag: ButtonType,
+    #[prop_or_default]
+    pub color: Option<ButtonColor>,
+    #[prop_or_default]
+    pub size: Option<Size>,
+    #[prop_or_default]
+    pub fullwidth: bool,
+    #[prop_or_default]
+    pub outlined: bool,
+    #[prop_or_default]
+    pub inverted: bool,
+    #[prop_or_default]
+    pub rounded: bool,
+    #[prop_or_default]
+    pub force_hovered: bool,
+    /// Note, this does not actually focus the button. It just provides it with
+    /// the focus css status
+    #[prop_or_default]
+    pub force_focused: bool,
+    #[prop_or_default]
+    pub force_active: bool,
+    #[prop_or_default]
+    pub loading: bool,
+    #[prop_or_default]
+    pub r#static: bool,
+    #[prop_or_default]
+    pub disabled: bool,
+
+    #[prop_or_default]
+    pub on_click: Option<Callback<()>>,
 }
 
 /// Tag for the button element
@@ -48,76 +97,11 @@ pub enum ButtonColor {
     DangerLight,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ButtonSize {
-    Small,
-    Normal,
-    Medium,
-    Large,
-}
-
-#[derive(Properties, Clone, PartialEq)]
-pub struct ButtonProps {
-    #[prop_or_default]
-    class: Option<Classes>,
-
-    #[prop_or_default]
-    tag: ButtonType,
-
-    #[prop_or_default]
-    color: Option<ButtonColor>,
-
-    #[prop_or_default]
-    size: Option<ButtonSize>,
-
-    #[prop_or(false)]
-    fullwidth: bool,
-
-    #[prop_or(false)]
-    outlined: bool,
-
-    #[prop_or(false)]
-    inverted: bool,
-
-    #[prop_or(false)]
-    rounded: bool,
-
-    #[prop_or(false)]
-    force_hovered: bool,
-
-    /// Note, this does not actually focus the button. It just provides it with
-    /// the focus css status
-    #[prop_or(false)]
-    force_focused: bool,
-
-    #[prop_or(false)]
-    force_active: bool,
-
-    #[prop_or(false)]
-    loading: bool,
-
-    #[prop_or(false)]
-    r#static: bool,
-
-    #[prop_or(false)]
-    disabled: bool,
-
-    #[prop_or_default]
-    on_click: Option<Callback<()>>,
-
-    #[prop_or_default]
-    children: Children,
-}
-
-const RESERVE_CLASSES: usize = 13;
-impl ButtonProps {
+// const RESERVE_CLASSES: usize = 13;
+impl PureButton {
     fn classes(&self) -> Classes {
-        let mut classes = if let Some(class) = &self.class {
-            class.clone()
-        } else {
-            yew::Classes::with_capacity(RESERVE_CLASSES)
-        };
-
+        // TODO: reserve?
+        let mut classes = self.class.clone();
         classes.push("button");
         if let Some(color) = &self.color {
             use ButtonColor::*;
@@ -164,13 +148,7 @@ impl ButtonProps {
         }
 
         if let Some(size) = self.size {
-            use ButtonSize::*;
-            match size {
-                Small => classes.push("is-small"),
-                Normal => classes.push("is-normal"),
-                Medium => classes.push("is-medium"),
-                Large => classes.push("is-large"),
-            }
+            classes.push(size.class())
         }
 
         if self.fullwidth {
@@ -213,33 +191,10 @@ impl ButtonProps {
     }
 }
 
-pub enum ButtonMsg {}
-
-impl Component for Button {
-    type Properties = ButtonProps;
-    type Message = ButtonMsg;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        // match msg {}
-        false
-    }
-
-    fn view(&self) -> Html {
+impl PureComponent for PureButton {
+    fn render(&self) -> Html {
         let mut attrs = Vec::with_capacity(3);
-        let mut node = match &self.props.tag {
+        let mut node = match &self.tag {
             ButtonType::Anchor { href } => {
                 if let Some(href) = href {
                     attrs.push(yew::virtual_dom::PositionalAttr::new(
@@ -265,24 +220,24 @@ impl Component for Button {
         // TODO: should we just construct classes as a string?
         attrs.push(yew::virtual_dom::PositionalAttr::new(
             "class",
-            self.props.classes().to_string(),
+            self.classes().to_string(),
         ));
 
-        if self.props.disabled {
+        if self.disabled {
             attrs.push(yew::virtual_dom::PositionalAttr::new_boolean(
                 "disabled", true,
             ));
         }
 
-        if let Some(callback) = &self.props.on_click {
+        if let Some(callback) = &self.on_click {
             node.listeners
                 .push(std::rc::Rc::new(yew::html::onclick::Wrapper::new(
                     callback.reform(|_| ()),
                 )))
         }
 
-        if !self.props.children.is_empty() {
-            node.add_children(self.props.children.clone());
+        if !self.children.is_empty() {
+            node.add_children(self.children.clone());
         }
 
         node.attributes = yew::virtual_dom::Attributes::Vec(attrs);

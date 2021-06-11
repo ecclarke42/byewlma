@@ -10,3 +10,4 @@ publish = false
 [dependencies]
 byewlma = { path = "../../" }
 yew = { git = "https://github.com/yewstack/yew/" }
+yew-router = { git = "https://github.com/yewstack/yew/" }
