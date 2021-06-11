@@ -10,4 +10,5 @@ pub mod components {
     pub mod button;
     pub mod icon;
     mod icon_kind;
+    pub mod menu;
 }
