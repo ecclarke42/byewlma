@@ -15,7 +15,7 @@ pub struct PureNotification {
     pub style: Option<String>,
 
     #[prop_or_default]
-    pub(crate) children: Children,
+    pub children: Children,
 
     #[prop_or_default]
     pub color: Option<SemanticOrLightColor>,

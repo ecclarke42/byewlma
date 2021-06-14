@@ -1,24 +1,11 @@
 use crate::components::prelude::*;
 
-/// Bulma [Content](https://bulma.io/documentation/elements/content/) Element
-pub type Content = Pure<PureContent>;
-
-#[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureContent {
-    #[prop_or_default]
-    pub id: Option<String>,
-
-    #[prop_or_default]
-    pub class: Classes,
-
-    #[prop_or_default]
-    pub style: Option<String>,
-
-    #[prop_or_default]
-    pub(crate) children: Children,
-
-    #[prop_or_default]
-    pub size: Option<Size>,
+pure_props! {
+    /// Bulma [Content](https://bulma.io/documentation/elements/content/) Element
+    pub struct Content {
+        #[prop_or_default]
+        pub size: Option<Size>,
+    }
 }
 
 impl PureComponent for PureContent {

@@ -1,4 +1,7 @@
-use byewlma::components::{Menu, MenuItem, MenuSection};
+use byewlma::{
+    components::{Menu, MenuItem, MenuSection},
+    layout::columns::{Column, ColumnSize, Columns},
+};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -47,10 +50,12 @@ impl Component for App {
                 <Router<Route> render={
                     Router::render(move |route: &Route| {
                         html! {
-                            <>
-                                { Self::render_menu(link.clone(), route) }
-                                { Self::render_route(route) }
-                            </>
+                            <Columns>
+                                <Column size={ColumnSize::Narrow}>{ Self::render_menu(link.clone(), route) }</Column>
+                                <Column>
+                                    { Self::render_route(route) }
+                                </Column>
+                            </Columns>
                         }
                     })
                 }/>

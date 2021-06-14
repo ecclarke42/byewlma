@@ -9,18 +9,20 @@ macro_rules! pub_use {
     };
 }
 
+#[macro_use]
 mod util {
+    #[macro_use]
     pub mod pure_wrapper;
 }
 
 pub mod components {
-    pub(crate) mod prelude {
+    pub mod prelude {
         pub use yew::prelude::*;
         pub use yewtil::{NeqAssign, Pure, PureComponent};
 
         pub use crate::helpers::{Color, Size};
-        pub use crate::util::pure_wrapper::PureWrapper;
     }
+    use prelude::*;
 
     // pub_use!(button::{Button});
     // pub_use!(icon::{Icon});
@@ -28,8 +30,8 @@ pub mod components {
     mod icon_kind;
 
     pub mod block;
-    // TODO: pub mod breadcrumb
     pub mod r#box;
+    // TODO: pub mod breadcrumb\
     pub mod button;
     pub mod buttons;
     // TODO: pub mod card;
@@ -65,9 +67,18 @@ pub mod components {
 
 pub mod form {
     pub mod field;
-    // pub mod input;
+    pub mod input;
 }
 
 pub mod layout {
     pub mod columns;
+    pub mod container;
+    pub mod footer;
+    pub mod hero;
+    // TODO: pub mod level;
+    // TODO: pub mod media_object;
+    pub mod section;
+    // TODO: pub mod tiles;
+
+    pub use columns::{Column, Columns};
 }

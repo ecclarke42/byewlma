@@ -21,7 +21,7 @@ pub struct PureButtons {
     pub style: Option<String>,
 
     #[prop_or_default]
-    pub(crate) children: ChildrenWithProps<crate::components::Button>,
+    pub children: ChildrenWithProps<crate::components::Button>,
 
     /// Attach the buttons with "has-addons"
     #[prop_or_default]

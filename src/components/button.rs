@@ -18,7 +18,7 @@ pub struct PureButton {
     pub style: Option<String>,
 
     #[prop_or_default]
-    pub(crate) children: Children,
+    pub children: Children,
 
     // Button props
     #[prop_or_default]

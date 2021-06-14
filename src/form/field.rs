@@ -15,7 +15,7 @@ pub struct PureField {
     pub style: Option<String>,
 
     #[prop_or_default]
-    pub(crate) children: Children,
+    pub children: Children,
 
     #[prop_or_default]
     pub label: Option<String>,
@@ -44,7 +44,7 @@ impl PureComponent for PureField {
         html! {
             <div id={self.id.clone()} class={class} style={self.style.clone()}>
                 { label }
-                { control }
+                { self.children.clone() }
                 { help }
             </div>
         }

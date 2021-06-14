@@ -20,7 +20,7 @@ pub struct PureColumns {
     pub style: Option<String>,
 
     #[prop_or_default]
-    pub(crate) children: ChildrenWithProps<Column>,
+    pub children: ChildrenWithProps<Column>,
 
     #[prop_or_default]
     pub gap: Option<ColumnGap>,
@@ -118,7 +118,7 @@ pub struct PureColumn {
     pub style: Option<String>,
 
     #[prop_or_default]
-    pub(crate) children: Children,
+    pub children: Children,
 
     #[prop_or_default]
     pub size: Option<ColumnSize>,
