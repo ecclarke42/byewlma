@@ -9,5 +9,8 @@ publish = false
 
 [dependencies]
 byewlma = { path = "../../" }
+lazy_static = "*"
 yew = { git = "https://github.com/yewstack/yew/" }
+yewtil = { git = "https://github.com/yewstack/yew/" }
 yew-router = { git = "https://github.com/yewstack/yew/" }
+syntect = { version = "*", default-features = false, features = ["default-fancy"] }

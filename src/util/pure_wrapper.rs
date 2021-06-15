@@ -6,7 +6,7 @@ macro_rules! pure_props {
         $(#[$meta:meta])*
         pub struct $name:ident {
             $(
-                $(#[$attrs:meta])?
+                $(#[$attrs:meta])*
                 $vis:vis $field:ident: $field_ty:ty,
             )*
         }
@@ -30,7 +30,7 @@ macro_rules! pure_props {
                 pub children: Children,
 
                 $(
-                    $(#[$attrs])?
+                    $(#[$attrs])*
                     $vis $field: $field_ty
                 ),*
             }

@@ -2,13 +2,6 @@ mod helpers;
 
 pub use helpers::*;
 
-macro_rules! pub_use {
-    ($mod:ident::{$($item:ident),*}) => {
-        mod $mod;
-        pub use $mod::{$($item),*};
-    };
-}
-
 #[macro_use]
 mod util {
     #[macro_use]
@@ -22,10 +15,6 @@ pub mod components {
 
         pub use crate::helpers::{Color, Size};
     }
-    use prelude::*;
-
-    // pub_use!(button::{Button});
-    // pub_use!(icon::{Icon});
 
     mod icon_kind;
 
@@ -51,7 +40,7 @@ pub mod components {
     // TODO: pub mod table;
     // TODO: pub mod tabs;
     // TODO: pub mod tag;
-    // TODO: pub mod title
+    pub mod title;
 
     pub use block::Block;
     pub use button::Button;
@@ -63,6 +52,7 @@ pub mod components {
     pub use notification::Notification;
     pub use progress::Progress;
     pub use r#box::Box;
+    pub use title::{Subtitle, Title};
 }
 
 pub mod form {
@@ -81,4 +71,16 @@ pub mod layout {
     // TODO: pub mod tiles;
 
     pub use columns::{Column, Columns};
+    pub use hero::Hero;
+    pub use section::Section;
+}
+
+pub mod typography;
+
+pub mod prelude {
+    pub use crate::components::*;
+    pub use crate::form::*;
+    pub use crate::helpers::*;
+    pub use crate::layout::*;
+    pub use crate::typography::*;
 }

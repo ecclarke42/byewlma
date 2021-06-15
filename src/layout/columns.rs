@@ -3,8 +3,9 @@ use crate::components::prelude::*;
 /// Bulma [Columns](https://bulma.io/documentation/columns/) Container
 pub type Columns = Pure<PureColumns>;
 
-/// Bulma [Column](https://bulma.io/documentation/columns/) Element
-pub type Column = Pure<PureColumn>;
+pub type Size = ColumnSize;
+pub type Offset = ColumnOffset;
+pub type Gap = ColumnGap;
 
 // TODO: responsiveness: https://bulma.io/documentation/columns/responsiveness/
 
@@ -106,25 +107,15 @@ impl PureComponent for PureColumns {
     }
 }
 
-#[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureColumn {
-    #[prop_or_default]
-    pub id: Option<String>,
+pure_props! {
+    /// Bulma [Column](https://bulma.io/documentation/columns/) Element
+    pub struct Column {
+        #[prop_or_default]
+        pub size: Option<ColumnSize>,
 
-    #[prop_or_default]
-    pub class: Classes,
-
-    #[prop_or_default]
-    pub style: Option<String>,
-
-    #[prop_or_default]
-    pub children: Children,
-
-    #[prop_or_default]
-    pub size: Option<ColumnSize>,
-
-    #[prop_or_default]
-    pub offset: Option<ColumnOffset>,
+        #[prop_or_default]
+        pub offset: Option<ColumnOffset>,
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]

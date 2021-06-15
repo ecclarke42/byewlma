@@ -1,57 +1,44 @@
 use crate::components::prelude::*;
 
-/// Bulma [Button](https://bulma.io/documentation/elements/button/) Element
-pub type Button = Pure<PureButton>;
 pub type Type = ButtonType;
 pub type Color = ButtonColor;
 
-#[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureButton {
-    // Standard Props
-    #[prop_or_default]
-    pub id: Option<String>,
+pure_props! {
+    /// Bulma [Button](https://bulma.io/documentation/elements/button/) Element
+    pub struct Button {
+        // Button props
+        #[prop_or_default]
+        pub tag: ButtonType,
+        #[prop_or_default]
+        pub color: Option<ButtonColor>,
+        #[prop_or_default]
+        pub size: Option<Size>,
+        #[prop_or_default]
+        pub fullwidth: bool,
+        #[prop_or_default]
+        pub outlined: bool,
+        #[prop_or_default]
+        pub inverted: bool,
+        #[prop_or_default]
+        pub rounded: bool,
+        #[prop_or_default]
+        pub force_hovered: bool,
+        /// Note, this does not actually focus the button. It just provides it with
+        /// the focus css status
+        #[prop_or_default]
+        pub force_focused: bool,
+        #[prop_or_default]
+        pub force_active: bool,
+        #[prop_or_default]
+        pub loading: bool,
+        #[prop_or_default]
+        pub r#static: bool,
+        #[prop_or_default]
+        pub disabled: bool,
 
-    #[prop_or_default]
-    pub class: Classes,
-
-    #[prop_or_default]
-    pub style: Option<String>,
-
-    #[prop_or_default]
-    pub children: Children,
-
-    // Button props
-    #[prop_or_default]
-    pub tag: ButtonType,
-    #[prop_or_default]
-    pub color: Option<ButtonColor>,
-    #[prop_or_default]
-    pub size: Option<Size>,
-    #[prop_or_default]
-    pub fullwidth: bool,
-    #[prop_or_default]
-    pub outlined: bool,
-    #[prop_or_default]
-    pub inverted: bool,
-    #[prop_or_default]
-    pub rounded: bool,
-    #[prop_or_default]
-    pub force_hovered: bool,
-    /// Note, this does not actually focus the button. It just provides it with
-    /// the focus css status
-    #[prop_or_default]
-    pub force_focused: bool,
-    #[prop_or_default]
-    pub force_active: bool,
-    #[prop_or_default]
-    pub loading: bool,
-    #[prop_or_default]
-    pub r#static: bool,
-    #[prop_or_default]
-    pub disabled: bool,
-
-    #[prop_or_default]
-    pub on_click: Option<Callback<()>>,
+        #[prop_or_default]
+        pub on_click: Option<Callback<()>>,
+    }
 }
 
 /// Tag for the button element
