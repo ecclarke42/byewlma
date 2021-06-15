@@ -9,4 +9,6 @@ fn main() {
 
 mod routes {
     pub mod button;
+
+    pub mod form_input;
 }

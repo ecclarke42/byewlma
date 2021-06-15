@@ -58,6 +58,9 @@ pub mod components {
 pub mod form {
     pub mod field;
     pub mod input;
+
+    pub use field::Field;
+    pub use input::TextInput;
 }
 
 pub mod layout {

@@ -29,6 +29,9 @@ pub enum Route {
     #[at("/components/button")]
     Button,
 
+    #[at("/form/input")]
+    FormInput,
+
     #[at("/")]
     Home,
 }
@@ -124,7 +127,11 @@ impl App {
                     />
                 </MenuSection>
                 <MenuSection label={html!{"Form"}}>
-
+                    <MenuItem
+                        label={html!{"Input"}}
+                        active={route == &Route::FormInput}
+                        on_click={link.callback(|_| Msg::Route(Route::FormInput))}
+                    />
                 </MenuSection>
                 <MenuSection label={html!{"Helpers"}}>
 
@@ -144,7 +151,10 @@ impl App {
             Route::LayoutLevel => html! { "level" },
             Route::LayoutSection => html! { "section" },
 
-            Route::Button => html! { <crate::routes::button::ButtonShowcase /> },
+            // Route::Button => html! { <crate::routes::button::ButtonShowcase /> },
+            Route::Button => html! { "Button Showcase" }, // Syntax highlighter is reeaaaaally slow
+
+            Route::FormInput => html! { <crate::routes::form_input::FormInputShowcase /> },
         }
     }
 }

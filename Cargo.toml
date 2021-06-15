@@ -17,6 +17,8 @@ members = [
 
 
 [dependencies]
+chrono = { version = "*", features = ["serde", "wasmbind"] }
+palette = { git = "https://github.com/Ogeon/palette" } # TODO: get them to cut a new release
 paste = "*"
 strum = { version = "0.21", features = ["derive"] }
 yew = { git = "https://github.com/yewstack/yew/" }
