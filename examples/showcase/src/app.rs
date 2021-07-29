@@ -11,28 +11,28 @@ pub struct App {
     link: ComponentLink<Self>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Routable)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Switch)]
 pub enum Route {
-    #[at("/layout/columns")]
+    #[to = "/layout/columns"]
     LayoutColumns,
-    #[at("/layout/container")]
+    #[to = "/layout/container"]
     LayoutContainer,
-    #[at("/layout/footer")]
+    #[to = "/layout/footer"]
     LayoutFooter,
-    #[at("/layout/hero")]
+    #[to = "/layout/hero"]
     LayoutHero,
-    #[at("/layout/level")]
+    #[to = "/layout/level"]
     LayoutLevel,
-    #[at("/layout/section")]
+    #[to = "/layout/section"]
     LayoutSection,
 
-    #[at("/components/button")]
+    #[to = "/components/button"]
     Button,
 
-    #[at("/form/input")]
+    #[to = "/form/input"]
     FormInput,
 
-    #[at("/")]
+    #[to = "/"]
     Home,
 }
 
@@ -55,7 +55,15 @@ impl Component for App {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Route(route) => {
-                yew_router::push_route(route);
+                // TODO?
+                // yew_router::push_route(self);
+                let mut r = String::new();
+                let state = wasm_bindgen::JsValue::NULL;
+                route.build_route_section::<()>(&mut r);
+                yew::utils::window()
+                    .history()
+                    .expect("failed to access history")
+                    .push_state_with_url(&state, "", Some(r.as_str()));
                 true
             }
         }
@@ -66,12 +74,12 @@ impl Component for App {
         html! {
             <Section>
                 <Router<Route> render={
-                    Router::render(move |route: &Route| {
+                    Router::render(move |route: Route| {
                         html! {
                             <Columns>
-                                <Column size={columns::Size::Narrow}>{ Self::render_menu(link.clone(), route) }</Column>
+                                <Column size={columns::Size::Narrow}>{ Self::render_menu(link.clone(), &route) }</Column>
                                 <Column>
-                                    { Self::render_route(route) }
+                                    { Self::render_route(&route) }
                                 </Column>
                             </Columns>
                         }

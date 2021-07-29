@@ -1,0 +1,16 @@
+[package]
+name = "byewlma-macros"
+version = "0.1.1"
+authors = ["Elliott Clarke <ecclarke42@gmail.com>"]
+edition = "2018"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/ecclarke42/byewlma"
+description = "Macros for `byewlma`"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "1", features = ["full", "extra-traits"]}
+quote = "1"
+proc-macro2 = "1"

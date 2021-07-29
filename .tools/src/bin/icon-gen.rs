@@ -154,8 +154,8 @@ fn parse_icons(path: &str) -> Vec<Icon> {
 
         items.push(Icon {
             name,
-            link,
             unicode,
+            link,
         });
     }
 

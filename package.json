@@ -1,0 +1,19 @@
+{
+  "name": "byewlma",
+  "repository": {
+    "url": "https://github.com/ecclarke42/byewlma"
+  },
+  "version": "0.1.0",
+  "description": "Styles for the byelma Rust crate",
+  "author": {
+    "name": "Elliott Clarke",
+    "email": "ecclarke42@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "**/**/*.scss"
+  ],
+  "dependencies": {
+    "bulma": "^0.9.3"
+  }
+}

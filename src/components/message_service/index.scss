@@ -1,0 +1,109 @@
+// TODO: enable middle?
+@use "sass:meta";
+$byewlma-msg-svc-spacing: 1.5em;
+@if variable-exists("block-spacing") {
+  $byewlma-msg-svc-spacing: $block-spacing;
+}
+
+$byewlma-msg-svc-max-width: 30vw !default;
+.byewlma-msg-svc-body {
+  max-width: $byewlma-msg-svc-max-width;
+}
+
+.byewlma-msg-svc-top-left {
+  overflow: hidden;
+  position: absolute;
+  top: $byewlma-msg-svc-spacing;
+  left: $byewlma-msg-svc-spacing;
+}
+
+.byewlma-msg-svc-top-right {
+  overflow: hidden;
+  position: absolute;
+  top: $byewlma-msg-svc-spacing;
+  right: $byewlma-msg-svc-spacing;
+}
+
+.byewlma-msg-svc-bottom-left {
+  overflow: hidden;
+  position: absolute;
+  bottom: $byewlma-msg-svc-spacing;
+  left: $byewlma-msg-svc-spacing;
+}
+
+.byewlma-msg-svc-bottom-right {
+  overflow: hidden;
+  position: absolute;
+  bottom: $byewlma-msg-svc-spacing;
+  right: $byewlma-msg-svc-spacing;
+}
+
+// Animate messages in and out
+
+// Hide overflow for body and notification's container to avoid scrollbar flicker
+// html body main {
+//   overflow: hidden;
+// }
+
+// .byewlma-msg-svc-parent {
+//   overflow: hidden;
+// }
+
+.byewlma-msg-svc-animate-in-from-left {
+  margin-bottom: 0;
+  max-height: 0;
+  opacity: 0;
+  transform: translateX(-300px);
+  animation: openSpace 0.5s ease forwards, moveIn 0.75s 0.2s ease forwards;
+}
+
+.byewlma-msg-svc-animate-in-from-right {
+  margin-bottom: 0;
+  max-height: 0;
+  opacity: 0;
+  transform: translateX(300px);
+  animation: openSpace 0.5s ease forwards, moveIn 0.75s 0.2s ease forwards;
+}
+
+.byewlma-msg-svc-animate-out-to-left {
+  animation: moveOutLeft 0.2s ease forwards, closeSpace 0.25s 0.5s ease forwards;
+}
+.byewlma-msg-svc-animate-out-to-right {
+  animation: moveOutRight 0.2s ease forwards,
+    closeSpace 0.25s 0.5s ease forwards;
+}
+// This animation doesn't look as nice... Stick with the move-out
+// .byewlma-msg-svc-animate-closed {
+//   animation: closeSpace 1s ease forwards;
+// }
+
+// inspiredby https://css-tricks.com/transitional-interfaces-coded/
+@keyframes openSpace {
+  to {
+    margin-bottom: $byewlma-msg-svc-spacing;
+    max-height: unset;
+  }
+}
+@keyframes closeSpace {
+  to {
+    max-height: 0;
+  }
+}
+@keyframes moveIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes moveOutLeft {
+  to {
+    opacity: 0;
+    transform: translateX(-300px);
+  }
+}
+@keyframes moveOutRight {
+  to {
+    opacity: 0;
+    transform: translateX(300px);
+  }
+}

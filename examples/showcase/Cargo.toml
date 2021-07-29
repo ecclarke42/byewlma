@@ -8,9 +8,10 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-byewlma = { path = "../../" }
+byewlma = { path = "../.." }
 lazy_static = "*"
-yew = { git = "https://github.com/yewstack/yew/" }
-yewtil = { git = "https://github.com/yewstack/yew/" }
-yew-router = { git = "https://github.com/yewstack/yew/" }
+wasm-bindgen = "*"
+yew = "0.18"
+yewtil = "0.4"
+yew-router = "0.15"
 syntect = { version = "*", default-features = false, features = ["default-fancy"] }

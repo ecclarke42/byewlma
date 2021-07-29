@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use crate::components::prelude::*;
 
 /// Bulma [Field](https://bulma.io/documentation/form/general/) Element
@@ -12,16 +14,16 @@ pub struct PureField {
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<String>,
+    pub style: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub children: Children,
 
     #[prop_or_default]
-    pub label: Option<String>,
+    pub label: Option<Cow<'static, str>>,
 
     #[prop_or_default]
-    pub help: Option<String>,
+    pub help: Option<Cow<'static, str>>,
 }
 
 impl PureComponent for PureField {

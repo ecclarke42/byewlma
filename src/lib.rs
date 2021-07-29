@@ -1,19 +1,27 @@
-mod helpers;
-
-pub use helpers::*;
-
 #[macro_use]
 mod util {
     #[macro_use]
     pub mod pure_wrapper;
 }
 
+pub trait BulmaClass {
+    //: Into<yew::Classes> {
+    fn class(&self) -> &'static str;
+
+    fn to_yew(&self) -> yew::Classes {
+        yew::Classes::from(self.class())
+    }
+}
+
+mod helpers;
+pub use helpers::*;
+
 pub mod components {
     pub mod prelude {
         pub use yew::prelude::*;
         pub use yewtil::{NeqAssign, Pure, PureComponent};
 
-        pub use crate::helpers::{Color, Size};
+        pub use crate::helpers::{Color, SemanticColor, Size};
     }
 
     mod icon_kind;
@@ -42,6 +50,11 @@ pub mod components {
     // TODO: pub mod tag;
     pub mod title;
 
+    // More complex components
+    pub mod message_service;
+    pub mod search_select;
+
+    // Re-export main components
     pub use block::Block;
     pub use button::Button;
     pub use buttons::Buttons;
@@ -56,11 +69,12 @@ pub mod components {
 }
 
 pub mod form {
+
     pub mod field;
     pub mod input;
 
     pub use field::Field;
-    pub use input::TextInput;
+    pub use input::*;
 }
 
 pub mod layout {
@@ -74,16 +88,14 @@ pub mod layout {
     // TODO: pub mod tiles;
 
     pub use columns::{Column, Columns};
+    pub use container::{Container, ContainerWidth};
     pub use hero::Hero;
     pub use section::Section;
 }
-
-pub mod typography;
 
 pub mod prelude {
     pub use crate::components::*;
     pub use crate::form::*;
     pub use crate::helpers::*;
     pub use crate::layout::*;
-    pub use crate::typography::*;
 }
