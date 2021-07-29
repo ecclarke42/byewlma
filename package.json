@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "files": [
-    "**/**/*.scss"
+    "src/**/*.scss"
   ],
   "dependencies": {
     "bulma": "^0.9.3"
