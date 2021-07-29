@@ -28,6 +28,6 @@ futures = "0.3"
 palette = "0.6"
 paste = "1"
 strum = { version = "0.21", features = ["derive"] }
-thiserror = "*"
+thiserror = "1"
 yew = "0.18"
 yewtil = { version = "0.4", features = ["pure"] }
