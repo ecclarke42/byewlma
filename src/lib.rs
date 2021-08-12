@@ -81,12 +81,14 @@ pub mod components {
 pub mod form {
 
     pub mod field;
+    pub mod form;
     pub mod input;
-
-    // TODO: textarea
+    pub mod textarea;
 
     pub use field::Field;
+    pub use form::FormRow;
     pub use input::*;
+    pub use textarea::TextArea;
 }
 
 pub mod layout {

@@ -24,6 +24,7 @@ members = [
 byewlma-macros = {path = "./byewlma-macros" } # "0.1"
 
 chrono = { version = "0.4", features = ["serde", "wasmbind"] }
+derive_more = "0.99"
 futures = "0.3"
 palette = "0.6"
 paste = "1"

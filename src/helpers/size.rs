@@ -20,7 +20,7 @@ impl Size {
     }
 
     pub fn add_class(&self, classes: &mut Classes) {
-        classes.push(self.class())
+        classes.push(self.class())// TODO unchecked push?
     }
 }
 

@@ -17,6 +17,7 @@ use std::{borrow::Cow, str::FromStr};
 
 use byewlma_macros::html_input;
 use chrono::Datelike;
+use derive_more::From;
 use yew::Properties;
 
 use crate::components::prelude::*;
@@ -65,6 +66,23 @@ impl InputValue for f32 {
         value.parse()
     }
 }
+
+// #[derive(From)]
+// pub enum Input {
+//     Color(ColorInput),
+//     Date(DateInput),
+//     DateTime(DateTimeInput),
+//     Email(EmailInput),
+//     Month(MonthInput),
+//     Integer(IntegerInput),
+//     PositiveInteger(PositiveIntegerInput),
+//     FloatInput(FloatInput),
+//     Phone(PhoneInput),
+//     Text(TextInput),
+//     Time(TimeInput),
+//     Url(UrlInput),
+//     Week(WeekInput),
+// }
 
 pub mod attributes {
 
@@ -495,9 +513,6 @@ pub enum MonthParseError {
     #[error("failed to parse month")]
     ParseMonth,
 }
-
-// TODO
-// pub struct IntegerInput
 
 /// An html [`<input type="number" />`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email) Element
 /// for unsigned integers

@@ -1,12 +1,16 @@
 pub use super::icon_kind::IconKind;
 use crate::{components::prelude::*, helpers::Color};
 
+#[derive(Debug, Clone)]
 pub struct Icon {
     props: IconProps,
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct IconProps {
+    #[prop_or_default]
+    pub class: Classes,
+
     /// Either an IconKind or a tuple (IconKind, IconKind) to indicate stacked
     /// icons
     pub kind: IconKind,
@@ -136,8 +140,15 @@ impl Component for Icon {
         // }
 
         let color = self.props.color.map(|c| c.text_class()).unwrap_or_default();
+
+        let mut span_class = self.props.class.clone();
+        unsafe {
+            span_class.unchecked_push("icon");
+            span_class.unchecked_push(color);
+        }
+
         let icon = html! {
-            <span class={classes!("icon", color)}>
+            <span class={span_class}>
                 <i class={classes!("fas", self.props.kind.name())}/>
             </span>
         };
