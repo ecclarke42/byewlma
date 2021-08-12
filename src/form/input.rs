@@ -5,18 +5,21 @@
 //! The following input types are not supported:
 //!     - radio: Use the `Radio` component
 //!     - checkbox: Use the `Checkbox` component
-//!     - button: Use the `Button` component (note that `submit` and `reset` ARE available)
+//!     - button: Use the `Button` component (note that `submit` and `reset` ARE
+//!       available)
 //!     - file: use the `File` component
 //!     - search: use a normal Text input
 //!     - image: not supported. Use `File`, maybe?
 //!     - submit: Use the `Button` component with ButtonType::Submit
 //!     - reset: Use the `Button` component with ButtonType::Reset
 
-use crate::components::prelude::*;
+use std::{borrow::Cow, str::FromStr};
+
 use byewlma_macros::html_input;
 use chrono::Datelike;
-use std::{borrow::Cow, str::FromStr};
 use yew::Properties;
+
+use crate::components::prelude::*;
 
 pub trait InputValue {
     type Result;
@@ -65,12 +68,234 @@ impl InputValue for f32 {
 
 pub mod attributes {
 
-    // TODO: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
+    /// Autocomplete Field Options, from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
     #[derive(Debug, Clone, Copy, PartialEq)]
-    pub enum Autocomplete {}
+    pub enum Autocomplete {
+        /// Tell the browser to disable autocompletion
+        Off,
+        /// Allow autocompletion, but with no hints
+        On,
+        /// A person's full name
+        Name,
+        /// Name Prefix or title (e.g. Mrs., Mr., Miss, Ms, Dr., ...)
+        HonorificPrefix,
+        /// Given/First name
+        GivenName,
+        /// Middle Name
+        AdditionalName,
+        /// Family/Last name
+        FamilyName,
+        /// Name suffix (e.g. Jr., "PhD.", "III", ...)
+        HonorificSuffix,
+        /// Nickname or Handle
+        Nickname,
+
+        Email,
+        Username,
+        /// A new password (as opposed to current)
+        NewPassword,
+        CurrentPassword,
+        OneTimeCode,
+        /// Job Title
+        OrganizationTitle,
+        /// Company or organization name
+        Organization,
+        /// A street address. This can be multiple lines of text, and should
+        /// fully identify the location of the address within its second
+        /// administrative level (typically a city or town), but should not
+        /// include the city name, ZIP or postal code, or country name.
+        StreetAddress,
+
+        /// An individual line of the street address. Should only be present if
+        /// "street-address" is not.
+        AddressLine1,
+        /// An individual line of the street address. Should only be present if
+        /// "street-address" is not.
+        AddressLine2,
+        /// An individual line of the street address. Should only be present if
+        /// "street-address" is not.
+        AddressLine3,
+
+        /// Finest grained [administrative level](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#administrative_levels_in_addresses)
+        AddressLevel4,
+        ///Third [administrative level](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#administrative_levels_in_addresses)
+        AddressLevel3,
+        /// Second [administrative level](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#administrative_levels_in_addresses),
+        /// typically the city, town, village, or other locality
+        AddressLevel2,
+        /// First [administrative level](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#administrative_levels_in_addresses),
+        /// typically the province. In the US, a state; in Switzerland, the
+        /// canton; in the UK, the post town.
+        AddressLevel1,
+
+        /// Country or territory code (i.e. not the full name)
+        Country,
+        /// Country or territory name
+        CountryName,
+        PostalCode,
+
+        /// Full Name as printed on or associated with a payment instrument such
+        /// as a credit card. Using a full name field is preferred, typically,
+        /// over breaking the name into pieces.
+        CCName,
+
+        /// A given (first) name as given on a payment instrument like a credit
+        /// card.
+        CCGivenName,
+
+        /// A middle name as given on a payment instrument or credit card.
+        CCAdditionalName,
+
+        /// A family name, as given on a credit card.
+        CCFamilyName,
+
+        /// A credit card number or other number identifying a payment method,
+        /// such as an account number.
+        CCNumber,
+
+        /// A payment method expiration date, typically in the form "MM/YY" or
+        /// "MM/YYYY".
+        CCExp,
+
+        /// The month in which the payment method expires.
+        CCExpMonth,
+
+        /// The year in which the payment method expires.
+        CCExpYear,
+
+        /// The security code for the payment instrument; on credit cards, this
+        /// is the 3-digit verification number on the back of the card.
+        CCCsc,
+
+        /// The type of payment instrument (such as "Visa" or "Master Card").
+        CCType,
+
+        /// The currency in which the transaction is to take place.
+        TransactionCurrency,
+
+        /// The amount, given in the currency specified by
+        /// "transaction-currency", of the transaction, for a payment form.
+        TransactionAmount,
+
+        /// A preferred language, given as a valid BCP 47 language tag.
+        Language,
+
+        /// A birth date, as a full date.
+        Birthday,
+
+        /// The day of the month of a birth date.
+        BirthdayDay,
+
+        /// The month of the year of a birth date.
+        BirthdayMonth,
+
+        /// The year of a birth date.
+        BirthdayYear,
+
+        /// A gender identity (such as "Female", "Fa'afafine", "Male"), as
+        /// freeform text without newlines.
+        Sex,
+
+        /// A full telephone number, including the country code. If you need to
+        /// break the phone number up into its components, you can use these
+        /// values for those fields:
+        Telephone,
+
+        /// The country code, such as "1" for the United States, Canada, and
+        /// other areas in North America and parts of the Caribbean.
+        TelephoneCountryCode,
+
+        /// The entire phone number without the country code component,
+        /// including a country-internal prefix. For the phone number
+        /// "1-855-555-6502", this field's value would be "855-555-6502".
+        TelephoneNational,
+
+        /// The area code, with any country-internal prefix applied if
+        /// appropriate.
+        TelephoneAreaCode,
+
+        /// The phone number without the country or area code. This can be split
+        /// further into two parts, for phone numbers which have an exchange
+        /// number and then a number within the exchange. For the phone number
+        /// "555-6502", use "tel-local-prefix" for "555" and "tel-local-suffix"
+        /// for "6502".
+        TelephoneLocal,
+
+        /// A telephone extension code within the phone number, such as a room
+        /// or suite number in a hotel or an office extension in a company.
+        TelephoneExtension,
+
+        /// A URL for an instant messaging protocol endpoint, such as
+        /// "xmpp:username@example.net".
+        Impp,
+
+        /// A URL, such as a home page or company web site address as
+        /// appropriate given the context of the other fields in the form.
+        Url,
+
+        ///The URL of an image representing the person, company, or contact
+        /// information given in the other fields in the form.
+        Photo,
+    }
     impl Autocomplete {
         pub fn value(&self) -> &'static str {
-            ""
+            use Autocomplete::*;
+            match self {
+                Off => "off",
+                On => "on",
+                Name => "name",
+                HonorificPrefix => "honorific-prefix",
+                GivenName => "given-name",
+                AdditionalName => "additional-name",
+                FamilyName => "family-name",
+                HonorificSuffix => "honorific-suffix",
+                Nickname => "nickname",
+                Email => "email",
+                Username => "username",
+                NewPassword => "new-password",
+                CurrentPassword => "current-password",
+                OneTimeCode => "one-time-code",
+                OrganizationTitle => "organization-title",
+                Organization => "organization",
+                StreetAddress => "street-address",
+                AddressLine1 => "address-line1",
+                AddressLine2 => "address-line2",
+                AddressLine3 => "address-line3",
+                AddressLevel4 => "address-level4",
+                AddressLevel3 => "address-level3",
+                AddressLevel2 => "address-level2",
+                AddressLevel1 => "address-level1",
+                Country => "country",
+                CountryName => "country-name",
+                PostalCode => "postal-code",
+                CCName => "cc-name",
+                CCGivenName => "cc-given-name",
+                CCAdditionalName => "cc-additional-name",
+                CCFamilyName => "cc-family-name",
+                CCNumber => "cc-number",
+                CCExp => "cc-exp",
+                CCExpMonth => "cc-exp-month",
+                CCExpYear => "cc-exp-year",
+                CCCsc => "cc-csc",
+                CCType => "cc-type",
+                TransactionCurrency => "transaction-currency",
+                TransactionAmount => "transaction-amount",
+                Language => "language",
+                Birthday => "bday",
+                BirthdayDay => "bday-day",
+                BirthdayMonth => "bday-month",
+                BirthdayYear => "bday-year",
+                Sex => "sex",
+                Telephone => "tel",
+                TelephoneCountryCode => "tel-country-code",
+                TelephoneNational => "tel-national",
+                TelephoneAreaCode => "tel-area-code",
+                TelephoneLocal => "tel-local",
+                TelephoneExtension => "tel-extension",
+                Impp => "impp",
+                Url => "url",
+                Photo => "photo",
+            }
         }
     }
 
@@ -159,9 +384,11 @@ impl InputValue for ColorValue {
 )]
 pub struct DateInput;
 pub type DateValue = chrono::NaiveDate;
+pub type DateError = chrono::ParseError;
+pub type DateResult = Result<DateValue, DateError>;
 const JS_DATE_FMT: &str = "%F"; // ISO 8601, same as "%Y-%m-%d"
 impl InputValue for DateValue {
-    type Result = Result<Self, chrono::ParseError>;
+    type Result = DateResult;
     fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
         self.format(JS_DATE_FMT).to_string().into()
     }
@@ -224,7 +451,8 @@ pub struct HiddenInput;
 
 /// An html [`<input type="month" />`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local) Element
 ///
-/// Not supported in IE, Firefox, or Safari, but like "date" will degrade to text
+/// Not supported in IE, Firefox, or Safari, but like "date" will degrade to
+/// text
 ///
 /// Step parameter is given in months
 #[html_input(
@@ -286,6 +514,15 @@ pub enum MonthParseError {
     ]
 )]
 pub struct PositiveIntegerInput;
+pub type PositiveIntegerResult = Result<u32, std::num::ParseIntError>;
+// impl InputValue for PositiveIntegerInput {
+//     type Result = Result<Self, std::num::ParseIntError>;
+//     fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+
+//     }
+//     // fn from_input_value(value: String) -> Self::Result {
+//     // }
+// }
 
 /// An html [`<input type="number" />`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email) Element
 /// for signed integers
@@ -334,7 +571,7 @@ pub struct FloatInput;
         required,
     ]
 )]
-pub struct PasswordInput;
+pub struct PasswordInput; // TODO: toggle visibility? switch type from "password" to "text"
 
 // TODO: Range (autocomplete, list, max, min, step)
 

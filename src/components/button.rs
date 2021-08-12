@@ -198,7 +198,7 @@ impl PureComponent for PureButton {
                 node
             }
             ButtonType::Submit => {
-                let mut node = yew::virtual_dom::VTag::new("input");
+                let mut node = yew::virtual_dom::VTag::new("button");
                 node.kind = Some("submit".into());
                 node
             }

@@ -1,5 +1,7 @@
-use yew::prelude::*;
-use yew::services::timeout::{TimeoutService, TimeoutTask};
+use yew::{
+    prelude::*,
+    services::timeout::{TimeoutService, TimeoutTask},
+};
 
 use super::properties::{Color, Position, Size};
 

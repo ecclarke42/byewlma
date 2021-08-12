@@ -1,6 +1,7 @@
+use byewlma::components::search_select::{
+    Select, SelectDisplay, SelectFilter, SelectState, Selection,
+};
 use yew::prelude::*;
-
-use byewlma::components::search_select::{Select, SelectDisplay, SelectFilter, SelectState, Selection};
 
 fn main() {
     yew::start_app::<App>();

@@ -1,3 +1,5 @@
+use crate::BulmaClass;
+
 pub enum Margin {
     Top(Value),
     Right(Value),
@@ -232,5 +234,16 @@ impl crate::BulmaClass for Padding {
             Y(Five) => "py-5",
             Y(Six) => "py-6",
         }
+    }
+}
+
+impl From<Margin> for yew::Classes {
+    fn from(m: Margin) -> Self {
+        m.to_yew()
+    }
+}
+impl From<Padding> for yew::Classes {
+    fn from(p: Padding) -> Self {
+        p.to_yew()
     }
 }

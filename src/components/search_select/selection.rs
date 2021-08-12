@@ -1,7 +1,8 @@
 use std::collections::BTreeSet;
 
-// TODO: evaluate performance of using btreemap's instead of sets (it's nice to have the sortedness, but performance?)
-// insertion should (almost always) be a greater value?
+// TODO: evaluate performance of using btreemap's instead of sets (it's nice to
+// have the sortedness, but performance?) insertion should (almost always) be a
+// greater value?
 
 #[derive(Clone)]
 pub enum Selection {

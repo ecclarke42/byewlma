@@ -1,6 +1,7 @@
+use std::io::Write;
+
 use heck::CamelCase;
 use scraper::{Html, Selector};
-use std::io::Write;
 
 // lazy_static! {
 //     static ref LIST_ITEM_REGEX = Regex::new(r"");
@@ -17,8 +18,8 @@ struct Icon {
 //     let path = args.last().expect("Input .html path required");
 
 //     println!("Reading file: {}", path);
-//     let contents = std::fs::read_to_string(path).expect("failed to read file");
-//     println!("...{} lines", contents.lines().count());
+//     let contents = std::fs::read_to_string(path).expect("failed to read
+// file");     println!("...{} lines", contents.lines().count());
 //     let contents = contents.replace("\n", " ");
 
 //     let list_item_regex = Regex::new(
@@ -41,8 +42,8 @@ struct Icon {
 
 //     println!("found: {} items", icons.len());
 //     let output = icons.join("\n\n");
-//     let mut file = std::fs::File::create("./tmp/out").expect("Failed to open output file");
-//     file.write_all(output.as_bytes())
+//     let mut file = std::fs::File::create("./tmp/out").expect("Failed to open
+// output file");     file.write_all(output.as_bytes())
 //         .expect("Failed to write file")
 // }
 

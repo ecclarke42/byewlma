@@ -1,5 +1,6 @@
-use quote::quote;
 use std::str::FromStr;
+
+use quote::quote;
 use syn::{
     parse::{Parse, ParseStream},
     parse_macro_input, Token,
@@ -29,7 +30,7 @@ pub fn transform_stream(
     .expect("input must be a struct")
     .fields;
 
-    let component_name = quote::format_ident!("Pure{}Input", type_name);
+    let component_name = quote::format_ident!("Pure{}", type_name);
     let (html_attr_fields, html_attr_props): (Vec<_>, Vec<_>) = attributes
         .into_iter()
         .map(|attr| (attr.field(value_type.clone()), attr.prop()))
@@ -218,9 +219,9 @@ pub enum HtmlInputAttrKind {
     // Size (redundant to bulma)
     // Src (only image)
     Step(syn::Type),
-    // Title ? (global tooltip)
-    // Value (via common)
-    // Width (only image)
+    /* Title ? (global tooltip)
+     * Value (via common)
+     * Width (only image) */
 }
 
 impl HtmlInputAttr {

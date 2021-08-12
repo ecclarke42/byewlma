@@ -1,8 +1,6 @@
 use byewlma::{
     components::{Menu, MenuItem, MenuSection},
-    layout::{
-        Section, {columns, Column, Columns},
-    },
+    layout::{columns, Column, Columns, Section},
 };
 use yew::prelude::*;
 use yew_router::prelude::*;

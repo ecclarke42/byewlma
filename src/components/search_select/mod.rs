@@ -52,7 +52,8 @@ pub struct SelectProps<T> {
     pub loading: bool,
 }
 
-// This SHOULD be the auto impl, but for some reason that thinks that T needs to be Clone
+// This SHOULD be the auto impl, but for some reason that thinks that T needs to
+// be Clone
 impl<T> Clone for SelectProps<T> {
     fn clone(&self) -> Self {
         Self {

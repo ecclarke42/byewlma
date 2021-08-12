@@ -79,7 +79,8 @@ impl<T> SelectState<T> {
         }
     }
 
-    /// Replace the option set. You should probably use `replace_options_reselecting`
+    /// Replace the option set. You should probably use
+    /// `replace_options_reselecting`
     pub async fn replace_options<I: Into<Arc<[T]>>>(&mut self, options: I) {
         if let Ok(mut inner) = self.selected_indices.write() {
             match *inner {
@@ -92,8 +93,9 @@ impl<T> SelectState<T> {
         self.options = options.into();
     }
 
-    /// Replace the existing options and attempt to reeselect the existing selections
-    /// (if `Selection::AlwaysOne`, it will default to index 0 if not found)
+    /// Replace the existing options and attempt to reeselect the existing
+    /// selections (if `Selection::AlwaysOne`, it will default to index 0 if
+    /// not found)
     pub async fn replace_options_reselecting<I: Into<Arc<[T]>>, F: Fn(&T, &T) -> bool>(
         &mut self,
         options: I,
@@ -280,7 +282,8 @@ impl<T> SelectState<T> {
         None
     }
 
-    // Get an option item an it's global index using it's relative position in the filter list
+    // Get an option item an it's global index using it's relative position in the
+    // filter list
     pub fn get_filtered(&self, position: usize) -> Option<(usize, &T)> {
         if let Ok(filtered) = self.filtered_indices.read() {
             match *filtered {

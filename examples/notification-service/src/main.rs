@@ -1,8 +1,7 @@
-use yew::prelude::*;
-
 use byewlma::components::message_service::{
     Color, NotificationConsumer, NotificationProps, NotificationService, Position,
 };
+use yew::prelude::*;
 
 fn main() {
     yew::start_app::<App>();

@@ -12,6 +12,16 @@ pub trait BulmaClass {
         yew::Classes::from(self.class())
     }
 }
+// impl<T: BulmaClass> From<&T> for yew::Classes {
+//     fn from(bulma: &T) -> Self {
+//         bulma.to_yew()
+//     }
+// }
+// impl<T: BulmaClass> Into<yew::Classes> for T {
+//     fn into(self) -> yew::Classes {
+//         self.to_yew()
+//     }
+// }
 
 mod helpers;
 pub use helpers::*;
@@ -73,6 +83,8 @@ pub mod form {
     pub mod field;
     pub mod input;
 
+    // TODO: textarea
+
     pub use field::Field;
     pub use input::*;
 }
@@ -93,9 +105,9 @@ pub mod layout {
     pub use section::Section;
 }
 
+// TODO: just traits in prelude?
 pub mod prelude {
-    pub use crate::components::*;
-    pub use crate::form::*;
-    pub use crate::helpers::*;
-    pub use crate::layout::*;
+    // pub use crate::components::*;
+    // pub use crate::form::*; // InputValue
+    pub use crate::{helpers::*, layout::*};
 }

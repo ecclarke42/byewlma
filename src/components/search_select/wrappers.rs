@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
-// Use the Box to make sure we're not doing a Arc::ptr_eq on dyn objects (since rust doesn't like that)
+// Use the Box to make sure we're not doing a Arc::ptr_eq on dyn objects (since
+// rust doesn't like that)
 type SelectFilterContainer<T> = Box<dyn Fn(&T, &str) -> bool>;
 
 pub struct SelectFilter<T> {

@@ -1,7 +1,5 @@
-use crate::components::prelude::*;
-use crate::helpers::Color;
-
 pub use super::icon_kind::IconKind;
+use crate::{components::prelude::*, helpers::Color};
 
 pub struct Icon {
     props: IconProps,
@@ -9,7 +7,8 @@ pub struct Icon {
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct IconProps {
-    /// Either an IconKind or a tuple (IconKind, IconKind) to indicate stacked icons
+    /// Either an IconKind or a tuple (IconKind, IconKind) to indicate stacked
+    /// icons
     pub kind: IconKind,
     // pub kind: IconStack,
     #[prop_or_default]
@@ -136,16 +135,24 @@ impl Component for Icon {
         //     IconStack::Stacked { bottom, top } => {}
         // }
 
-        // if let Some(text) = &self.props.text {
-        //     html! {}
-        // } else {
-        //     html! {}
-        // }
-
-        html! {
-            <span class="icon">
+        let color = self.props.color.map(|c| c.text_class()).unwrap_or_default();
+        let icon = html! {
+            <span class={classes!("icon", color)}>
                 <i class={classes!("fas", self.props.kind.name())}/>
             </span>
+        };
+
+        if let Some(text) = &self.props.text {
+            html! {
+                <span class={color}>
+                    <div>
+                        <p>{icon}</p>
+                        <p>{text}</p>
+                    </div>
+                </span>
+            }
+        } else {
+            icon
         }
     }
 }
