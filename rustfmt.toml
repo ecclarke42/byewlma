@@ -1,0 +1,12 @@
+# Code Condensation
+condense_wildcard_suffixes = true
+use_field_init_shorthand = true
+use_try_shorthand = true
+
+# Import Reformatting
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+
+# Comment Formatting
+format_code_in_doc_comments = true
+wrap_comments = true

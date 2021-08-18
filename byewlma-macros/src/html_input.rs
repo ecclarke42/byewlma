@@ -62,9 +62,9 @@ pub fn transform_stream(
 
             // Yew Input Props
             #[prop_or_default]
-            pub color: Option<SemanticColor>,
+            pub color: Option<crate::SemanticColor>,
             #[prop_or_default]
-            pub size: Option<Size>,
+            pub size: Option<crate::Size>,
             #[prop_or_default]
             pub rounded: bool,
             #[prop_or_default]
@@ -91,35 +91,36 @@ pub fn transform_stream(
         impl #component_name {
             fn classes(&self) -> Classes {
                 let mut class = self.class.clone();
-                class.push("input");
+                unsafe {
+                    class.unchecked_push("input");
+                    if let Some(color) = &self.color {
+                        class.add(color);
+                    }
+                    if let Some(size) = &self.size {
+                        class.add(size);
+                    }
 
-                if let Some(color) = &self.color {
-                    class.push(color.is_class());
+                    if self.rounded {
+                        class.unchecked_push("is-rounded");
+                    }
+
+                    if self.force_hover {
+                        class.unchecked_push("is-hovered");
+                    }
+
+                    if self.force_focus {
+                        class.unchecked_push("is-focused");
+                    }
+
+                    if self.is_loading {
+                        class.unchecked_push("is-loading");
+                    }
+
+                    if self.is_static {
+                        class.unchecked_push("is-static");
+                    }
                 }
 
-                if let Some(size) = &self.size {
-                    class.push(size.class());
-                }
-
-                if self.rounded {
-                    class.push("is-rounded");
-                }
-
-                if self.force_hover {
-                    class.push("is-hovered");
-                }
-
-                if self.force_focus {
-                    class.push("is-focused");
-                }
-
-                if self.is_loading {
-                    class.push("is-loading");
-                }
-
-                if self.is_static {
-                    class.push("is-static");
-                }
                 class
             }
 

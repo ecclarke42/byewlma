@@ -1,5 +1,7 @@
+use yew::Callback;
+
 pub use super::icon_kind::IconKind;
-use crate::{components::prelude::*, helpers::Color};
+use crate::{helpers::Color, innerlude::*};
 
 #[derive(Debug, Clone)]
 pub struct Icon {
@@ -41,6 +43,9 @@ pub struct IconProps {
 
     #[prop_or_default]
     pub pull: Option<IconPull>,
+
+    #[prop_or_default]
+    pub on_click: Option<Callback<web_sys::MouseEvent>>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -148,7 +153,7 @@ impl Component for Icon {
         }
 
         let icon = html! {
-            <span class={span_class}>
+            <span class={span_class} onclick={self.props.on_click.clone()}>
                 <i class={classes!("fas", self.props.kind.name())}/>
             </span>
         };
@@ -173,7 +178,7 @@ impl Component for Icon {
 // #[derive(Debug, Default, PartialEq, Clone, Properties)]
 // pub struct PureIconText {
 //     #[prop_or_default]
-//     pub id: Option<String>,
+//     pub id: Option<Cow<'static, str>>,
 
 //     #[prop_or_default]
 //     pub class: Classes,

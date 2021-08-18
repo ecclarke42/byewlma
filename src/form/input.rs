@@ -17,10 +17,9 @@ use std::{borrow::Cow, str::FromStr};
 
 use byewlma_macros::html_input;
 use chrono::Datelike;
-use derive_more::From;
 use yew::Properties;
 
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 pub trait InputValue {
     type Result;

@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 pure_props! {
     /// Bulma [Section](https://bulma.io/documentation/layout/section/) Layout Element
@@ -24,12 +24,13 @@ impl Default for SectionSize {
 impl PureComponent for PureSection {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("section");
-
-        match self.size {
-            SectionSize::Normal => {}
-            SectionSize::Medium => class.push("is-medium"),
-            SectionSize::Large => class.push("is-large"),
+        unsafe {
+            class.unchecked_push("section");
+            match self.size {
+                SectionSize::Normal => {}
+                SectionSize::Medium => class.unchecked_push("is-medium"),
+                SectionSize::Large => class.unchecked_push("is-large"),
+            }
         }
 
         html! {

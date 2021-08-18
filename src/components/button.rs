@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::{innerlude::*, Size};
 
 pub type Type = ButtonType;
 pub type Color = ButtonColor;

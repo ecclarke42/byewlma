@@ -1,6 +1,7 @@
-use crate::BulmaClass;
+use crate::innerlude::*;
 
 pub enum Margin {
+    All(Value),
     Top(Value),
     Right(Value),
     Bottom(Value),
@@ -10,6 +11,7 @@ pub enum Margin {
 }
 
 pub enum Padding {
+    All(Value),
     Top(Value),
     Right(Value),
     Bottom(Value),
@@ -36,6 +38,14 @@ pub enum Value {
 }
 
 impl Margin {
+    pub const ALL_0: Self = Self::All(Value::Zero);
+    pub const ALL_1: Self = Self::All(Value::One);
+    pub const ALL_2: Self = Self::All(Value::Two);
+    pub const ALL_3: Self = Self::All(Value::Three);
+    pub const ALL_4: Self = Self::All(Value::Four);
+    pub const ALL_5: Self = Self::All(Value::Five);
+    pub const ALL_6: Self = Self::All(Value::Six);
+
     pub const TOP_0: Self = Self::Top(Value::Zero);
     pub const TOP_1: Self = Self::Top(Value::One);
     pub const TOP_2: Self = Self::Top(Value::Two);
@@ -85,11 +95,18 @@ impl Margin {
     pub const Y_6: Self = Self::Y(Value::Six);
 }
 
-impl crate::BulmaClass for Margin {
+impl crate::util::class::BulmaClass for Margin {
     fn class(&self) -> &'static str {
         use Margin::*;
         use Value::*;
         match self {
+            All(Zero) => "m-0",
+            All(One) => "m-1",
+            All(Two) => "m-2",
+            All(Three) => "m-3",
+            All(Four) => "m-4",
+            All(Five) => "m-5",
+            All(Six) => "m-6",
             Top(Zero) => "mt-0",
             Top(One) => "mt-1",
             Top(Two) => "mt-2",
@@ -137,6 +154,14 @@ impl crate::BulmaClass for Margin {
 }
 
 impl Padding {
+    pub const ALL_0: Self = Self::All(Value::Zero);
+    pub const ALL_1: Self = Self::All(Value::One);
+    pub const ALL_2: Self = Self::All(Value::Two);
+    pub const ALL_3: Self = Self::All(Value::Three);
+    pub const ALL_4: Self = Self::All(Value::Four);
+    pub const ALL_5: Self = Self::All(Value::Five);
+    pub const ALL_6: Self = Self::All(Value::Six);
+
     pub const TOP_0: Self = Self::Top(Value::Zero);
     pub const TOP_1: Self = Self::Top(Value::One);
     pub const TOP_2: Self = Self::Top(Value::Two);
@@ -186,11 +211,18 @@ impl Padding {
     pub const Y_6: Self = Self::Y(Value::Six);
 }
 
-impl crate::BulmaClass for Padding {
+impl crate::util::class::BulmaClass for Padding {
     fn class(&self) -> &'static str {
         use Padding::*;
         use Value::*;
         match self {
+            All(Zero) => "p-0",
+            All(One) => "p-1",
+            All(Two) => "p-2",
+            All(Three) => "p-3",
+            All(Four) => "p-4",
+            All(Five) => "p-5",
+            All(Six) => "p-6",
             Top(Zero) => "pt-0",
             Top(One) => "pt-1",
             Top(Two) => "pt-2",

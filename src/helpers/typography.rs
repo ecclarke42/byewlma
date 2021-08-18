@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::{innerlude::*, Color};
 
 pure_props! {
     /// Bulma Typography Helper
@@ -88,63 +88,232 @@ pure_props! {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
 pub enum TextSize {
     /// `font-size:`[`$size-1`](https://bulma.io/documentation/customize/variables/) (default: `3rem`)
+    #[bulma_class = "is-size-1"]
     Sz1,
     /// `font-size:`[`$size-2`](https://bulma.io/documentation/customize/variables/) (default: `2.5rem`)
+    #[bulma_class = "is-size-2"]
     Sz2,
     /// `font-size:`[`$size-3`](https://bulma.io/documentation/customize/variables/) (default: `2rem`)
+    #[bulma_class = "is-size-3"]
     Sz3,
     /// `font-size:`[`$size-4`](https://bulma.io/documentation/customize/variables/) (default: `1.5rem`)
+    #[bulma_class = "is-size-4"]
     Sz4,
     /// `font-size:`[`$size-5`](https://bulma.io/documentation/customize/variables/) (default: `1.25rem`)
+    #[bulma_class = "is-size-5"]
     Sz5,
     /// `font-size:`[`$size-6`](https://bulma.io/documentation/customize/variables/) (default: `1rem`)
+    #[bulma_class = "is-size-6"]
     Sz6,
     /// `font-size:`[`$size-7`](https://bulma.io/documentation/customize/variables/) (default: `0.75rem`)
+    #[bulma_class = "is-size-7"]
     Sz7,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+impl TextSize {
+    pub fn mobile(&self) -> &'static str {
+        match self {
+            TextSize::Sz1 => "is-size-1-mobile",
+            TextSize::Sz2 => "is-size-2-mobile",
+            TextSize::Sz3 => "is-size-3-mobile",
+            TextSize::Sz4 => "is-size-4-mobile",
+            TextSize::Sz5 => "is-size-5-mobile",
+            TextSize::Sz6 => "is-size-6-mobile",
+            TextSize::Sz7 => "is-size-7-mobile",
+        }
+    }
+    pub fn touch(&self) -> &'static str {
+        match self {
+            TextSize::Sz1 => "is-size-1-touch",
+            TextSize::Sz2 => "is-size-2-touch",
+            TextSize::Sz3 => "is-size-3-touch",
+            TextSize::Sz4 => "is-size-4-touch",
+            TextSize::Sz5 => "is-size-5-touch",
+            TextSize::Sz6 => "is-size-6-touch",
+            TextSize::Sz7 => "is-size-7-touch",
+        }
+    }
+    pub fn tablet(&self) -> &'static str {
+        match self {
+            TextSize::Sz1 => "is-size-1-tablet",
+            TextSize::Sz2 => "is-size-2-tablet",
+            TextSize::Sz3 => "is-size-3-tablet",
+            TextSize::Sz4 => "is-size-4-tablet",
+            TextSize::Sz5 => "is-size-5-tablet",
+            TextSize::Sz6 => "is-size-6-tablet",
+            TextSize::Sz7 => "is-size-7-tablet",
+        }
+    }
+    pub fn desktop(&self) -> &'static str {
+        match self {
+            TextSize::Sz1 => "is-size-1-desktop",
+            TextSize::Sz2 => "is-size-2-desktop",
+            TextSize::Sz3 => "is-size-3-desktop",
+            TextSize::Sz4 => "is-size-4-desktop",
+            TextSize::Sz5 => "is-size-5-desktop",
+            TextSize::Sz6 => "is-size-6-desktop",
+            TextSize::Sz7 => "is-size-7-desktop",
+        }
+    }
+    pub fn widescreen(&self) -> &'static str {
+        match self {
+            TextSize::Sz1 => "is-size-1-widescreen",
+            TextSize::Sz2 => "is-size-2-widescreen",
+            TextSize::Sz3 => "is-size-3-widescreen",
+            TextSize::Sz4 => "is-size-4-widescreen",
+            TextSize::Sz5 => "is-size-5-widescreen",
+            TextSize::Sz6 => "is-size-6-widescreen",
+            TextSize::Sz7 => "is-size-7-widescreen",
+        }
+    }
+    pub fn fullhd(&self) -> &'static str {
+        match self {
+            TextSize::Sz1 => "is-size-1-fullhd",
+            TextSize::Sz2 => "is-size-2-fullhd",
+            TextSize::Sz3 => "is-size-3-fullhd",
+            TextSize::Sz4 => "is-size-4-fullhd",
+            TextSize::Sz5 => "is-size-5-fullhd",
+            TextSize::Sz6 => "is-size-6-fullhd",
+            TextSize::Sz7 => "is-size-7-fullhd",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
 pub enum TextAlignment {
+    #[bulma_class = "has-text-centered"]
     Centered,
+    #[bulma_class = "has-text-justified"]
     Justified,
+    #[bulma_class = "has-text-left"]
     Left,
+    #[bulma_class = "has-text-right"]
     Right,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+impl TextAlignment {
+    pub fn mobile(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-mobile",
+            TextAlignment::Justified => "has-text-justified-mobile",
+            TextAlignment::Left => "has-text-left-mobile",
+            TextAlignment::Right => "has-text-right-mobile",
+        }
+    }
+    pub fn touch(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-touch",
+            TextAlignment::Justified => "has-text-justified-touch",
+            TextAlignment::Left => "has-text-left-touch",
+            TextAlignment::Right => "has-text-right-touch",
+        }
+    }
+    pub fn tablet_only(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-tablet-only",
+            TextAlignment::Justified => "has-text-justified-tablet-only",
+            TextAlignment::Left => "has-text-left-tablet-only",
+            TextAlignment::Right => "has-text-right-tablet-only",
+        }
+    }
+    pub fn tablet(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-tablet",
+            TextAlignment::Justified => "has-text-justified-tablet",
+            TextAlignment::Left => "has-text-left-tablet",
+            TextAlignment::Right => "has-text-right-tablet",
+        }
+    }
+    pub fn desktop_only(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-desktop-only",
+            TextAlignment::Justified => "has-text-justified-desktop-only",
+            TextAlignment::Left => "has-text-left-desktop-only",
+            TextAlignment::Right => "has-text-right-desktop-only",
+        }
+    }
+    pub fn desktop(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-desktop",
+            TextAlignment::Justified => "has-text-justified-desktop",
+            TextAlignment::Left => "has-text-left-desktop",
+            TextAlignment::Right => "has-text-right-desktop",
+        }
+    }
+    pub fn widescreen_only(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-widescreen-only",
+            TextAlignment::Justified => "has-text-justified-widescreen-only",
+            TextAlignment::Left => "has-text-left-widescreen-only",
+            TextAlignment::Right => "has-text-right-widescreen-only",
+        }
+    }
+    pub fn widescreen(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-widescreen",
+            TextAlignment::Justified => "has-text-justified-widescreen",
+            TextAlignment::Left => "has-text-left-widescreen",
+            TextAlignment::Right => "has-text-right-widescreen",
+        }
+    }
+    pub fn fullhd(&self) -> &'static str {
+        match self {
+            TextAlignment::Centered => "has-text-centered-fullhd",
+            TextAlignment::Justified => "has-text-justified-fullhd",
+            TextAlignment::Left => "has-text-left-fullhd",
+            TextAlignment::Right => "has-text-right-fullhd",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
 pub enum TextTransform {
+    #[bulma_class = "is-capitalized"]
     Capitalize,
+    #[bulma_class = "is-lowercase"]
     Lowercase,
+    #[bulma_class = "is-uppercase"]
     Uppercase,
+    #[bulma_class = "is-italic"]
     Italic,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
 pub enum TextWeight {
+    #[bulma_class = "has-text-weight-light"]
     Light,
+    #[bulma_class = "has-text-weight-normal"]
     Normal,
+    #[bulma_class = "has-text-weight-medium"]
     Medium,
+    #[bulma_class = "has-text-weight-semibold"]
     SemiBold,
+    #[bulma_class = "has-text-weight-bold"]
     Bold,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
 pub enum FontFamily {
     /// Set family to [`$family-sans-serif`](https://bulma.io/documentation/customize/variables/)
+    #[bulma_class = "is-family-sans-serif"]
     SansSerif,
     /// Set family to [`$family-monospace`](https://bulma.io/documentation/customize/variables/)
+    #[bulma_class = "is-family-monospace"]
     Monospace,
     /// Set family to [`$family-primary`](https://bulma.io/documentation/customize/variables/),
     /// which is, by default, equal to [`$family-sans-serif`](https://bulma.io/documentation/customize/variables/)
+    #[bulma_class = "is-family-primary"]
     Primary,
     /// Set family to [`$family-secondary`](https://bulma.io/documentation/customize/variables/),
     /// which is, by default, equal to [`$family-sans-serif`](https://bulma.io/documentation/customize/variables/)
+    #[bulma_class = "is-family-secondary"]
     Secondary,
     /// Set family to [`$family-code`](https://bulma.io/documentation/customize/variables/)
     /// which is, by default, equal to [`$family-monospace`](https://bulma.io/documentation/customize/variables/)
+    #[bulma_class = "is-family-code"]
     Code,
 }
 
@@ -152,220 +321,79 @@ impl PureComponent for PureText {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
 
-        if let Some(color) = self.color {
+        if let Some(color) = &self.color {
             class.push(color.text_class());
         }
 
-        if let Some(size) = self.size {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1",
-                TextSize::Sz2 => "is-size-2",
-                TextSize::Sz3 => "is-size-3",
-                TextSize::Sz4 => "is-size-4",
-                TextSize::Sz5 => "is-size-5",
-                TextSize::Sz6 => "is-size-6",
-                TextSize::Sz7 => "is-size-7",
-            });
+        if let Some(size) = &self.size {
+            class.add(size);
         }
 
-        if let Some(size) = self.size_mobile {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1-mobile",
-                TextSize::Sz2 => "is-size-2-mobile",
-                TextSize::Sz3 => "is-size-3-mobile",
-                TextSize::Sz4 => "is-size-4-mobile",
-                TextSize::Sz5 => "is-size-5-mobile",
-                TextSize::Sz6 => "is-size-6-mobile",
-                TextSize::Sz7 => "is-size-7-mobile",
-            });
+        unsafe {
+            if let Some(size) = &self.size_mobile {
+                class.unchecked_push(size.mobile());
+            }
+            if let Some(size) = &self.size_touch {
+                class.unchecked_push(size.touch());
+            }
+            if let Some(size) = &self.size_tablet_and_greater {
+                class.unchecked_push(size.tablet());
+            }
+            if let Some(size) = &self.size_desktop_and_greater {
+                class.unchecked_push(size.desktop());
+            }
+            if let Some(size) = &self.size_widescreen_and_greater {
+                class.unchecked_push(size.widescreen());
+            }
+            if let Some(size) = &self.size_fullhd_and_greater {
+                class.unchecked_push(size.fullhd());
+            }
         }
 
-        if let Some(size) = self.size_touch {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1-touch",
-                TextSize::Sz2 => "is-size-2-touch",
-                TextSize::Sz3 => "is-size-3-touch",
-                TextSize::Sz4 => "is-size-4-touch",
-                TextSize::Sz5 => "is-size-5-touch",
-                TextSize::Sz6 => "is-size-6-touch",
-                TextSize::Sz7 => "is-size-7-touch",
-            });
+        if let Some(alignment) = &self.alignment {
+            class.add(alignment);
         }
 
-        if let Some(size) = self.size_tablet_and_greater {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1-tablet",
-                TextSize::Sz2 => "is-size-2-tablet",
-                TextSize::Sz3 => "is-size-3-tablet",
-                TextSize::Sz4 => "is-size-4-tablet",
-                TextSize::Sz5 => "is-size-5-tablet",
-                TextSize::Sz6 => "is-size-6-tablet",
-                TextSize::Sz7 => "is-size-7-tablet",
-            });
+        unsafe {
+            if let Some(alignment) = &self.alignment_mobile {
+                class.unchecked_push(alignment.mobile());
+            }
+            if let Some(alignment) = &self.alignment_touch {
+                class.unchecked_push(alignment.touch());
+            }
+            if let Some(alignment) = &self.alignment_only_tablet {
+                class.unchecked_push(alignment.tablet_only());
+            }
+            if let Some(alignment) = &self.alignment_tablet_and_greater {
+                class.unchecked_push(alignment.tablet());
+            }
+            if let Some(alignment) = &self.alignment_only_desktop {
+                class.unchecked_push(alignment.desktop_only());
+            }
+            if let Some(alignment) = &self.alignment_desktop_and_greater {
+                class.unchecked_push(alignment.desktop());
+            }
+            if let Some(alignment) = &self.alignment_only_widescreen {
+                class.unchecked_push(alignment.widescreen_only());
+            }
+            if let Some(alignment) = &self.alignment_widescreen_and_greater {
+                class.unchecked_push(alignment.widescreen());
+            }
+            if let Some(alignment) = &self.alignment_fullhd_and_greater {
+                class.unchecked_push(alignment.fullhd());
+            }
         }
 
-        if let Some(size) = self.size_desktop_and_greater {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1-desktop",
-                TextSize::Sz2 => "is-size-2-desktop",
-                TextSize::Sz3 => "is-size-3-desktop",
-                TextSize::Sz4 => "is-size-4-desktop",
-                TextSize::Sz5 => "is-size-5-desktop",
-                TextSize::Sz6 => "is-size-6-desktop",
-                TextSize::Sz7 => "is-size-7-desktop",
-            });
+        if let Some(transform) = &self.transform {
+            class.add(transform);
         }
 
-        if let Some(size) = self.size_widescreen_and_greater {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1-widescreen",
-                TextSize::Sz2 => "is-size-2-widescreen",
-                TextSize::Sz3 => "is-size-3-widescreen",
-                TextSize::Sz4 => "is-size-4-widescreen",
-                TextSize::Sz5 => "is-size-5-widescreen",
-                TextSize::Sz6 => "is-size-6-widescreen",
-                TextSize::Sz7 => "is-size-7-widescreen",
-            });
+        if let Some(weight) = &self.weight {
+            class.add(weight);
         }
 
-        if let Some(size) = self.size_fullhd_and_greater {
-            class.push(match size {
-                TextSize::Sz1 => "is-size-1-fullhd",
-                TextSize::Sz2 => "is-size-2-fullhd",
-                TextSize::Sz3 => "is-size-3-fullhd",
-                TextSize::Sz4 => "is-size-4-fullhd",
-                TextSize::Sz5 => "is-size-5-fullhd",
-                TextSize::Sz6 => "is-size-6-fullhd",
-                TextSize::Sz7 => "is-size-7-fullhd",
-            });
-        }
-
-        if let Some(alignment) = self.alignment {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered",
-                TextAlignment::Justified => "has-text-justified",
-                TextAlignment::Left => "has-text-left",
-                TextAlignment::Right => "has-text-right",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_mobile {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-mobile",
-                TextAlignment::Justified => "has-text-justified-mobile",
-                TextAlignment::Left => "has-text-left-mobile",
-                TextAlignment::Right => "has-text-right-mobile",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_touch {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-touch",
-                TextAlignment::Justified => "has-text-justified-touch",
-                TextAlignment::Left => "has-text-left-touch",
-                TextAlignment::Right => "has-text-right-touch",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_only_tablet {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-tablet-only",
-                TextAlignment::Justified => "has-text-justified-tablet-only",
-                TextAlignment::Left => "has-text-left-tablet-only",
-                TextAlignment::Right => "has-text-right-tablet-only",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_tablet_and_greater {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-tablet",
-                TextAlignment::Justified => "has-text-justified-tablet",
-                TextAlignment::Left => "has-text-left-tablet",
-                TextAlignment::Right => "has-text-right-tablet",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_only_desktop {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-desktop-only",
-                TextAlignment::Justified => "has-text-justified-desktop-only",
-                TextAlignment::Left => "has-text-left-desktop-only",
-                TextAlignment::Right => "has-text-right-desktop-only",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_desktop_and_greater {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-desktop",
-                TextAlignment::Justified => "has-text-justified-desktop",
-                TextAlignment::Left => "has-text-left-desktop",
-                TextAlignment::Right => "has-text-right-desktop",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_only_widescreen {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-widescreen-only",
-                TextAlignment::Justified => "has-text-justified-widescreen-only",
-                TextAlignment::Left => "has-text-left-widescreen-only",
-                TextAlignment::Right => "has-text-right-widescreen-only",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_widescreen_and_greater {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-widescreen",
-                TextAlignment::Justified => "has-text-justified-widescreen",
-                TextAlignment::Left => "has-text-left-widescreen",
-                TextAlignment::Right => "has-text-right-widescreen",
-            });
-        }
-
-        if let Some(alignment) = self.alignment_fullhd_and_greater {
-            class.push(match alignment {
-                TextAlignment::Centered => "has-text-centered-fullhd",
-                TextAlignment::Justified => "has-text-justified-fullhd",
-                TextAlignment::Left => "has-text-left-fullhd",
-                TextAlignment::Right => "has-text-right-fullhd",
-            });
-        }
-
-        if let Some(transform) = self.transform {
-            class.push(match transform {
-                TextTransform::Capitalize => "is-capitalized",
-                TextTransform::Lowercase => "is-lowercase",
-                TextTransform::Uppercase => "is-uppercase",
-                TextTransform::Italic => "is-italic",
-            })
-        }
-
-        if let Some(transform) = self.transform {
-            class.push(match transform {
-                TextTransform::Capitalize => "is-capitalized",
-                TextTransform::Lowercase => "is-lowercase",
-                TextTransform::Uppercase => "is-uppercase",
-                TextTransform::Italic => "is-italic",
-            })
-        }
-
-        if let Some(weight) = self.weight {
-            class.push(match weight {
-                TextWeight::Light => "has-text-weight-light",
-                TextWeight::Normal => "has-text-weight-normal",
-                TextWeight::Medium => "has-text-weight-medium",
-                TextWeight::SemiBold => "has-text-weight-semibold",
-                TextWeight::Bold => "has-text-weight-bold",
-            })
-        }
-
-        if let Some(family) = self.font_family {
-            class.push(match family {
-                FontFamily::SansSerif => "is-family-sans-serif",
-                FontFamily::Monospace => "is-family-monospace",
-                FontFamily::Primary => "is-family-primary",
-                FontFamily::Secondary => "is-family-secondary",
-                FontFamily::Code => "is-family-code",
-            })
+        if let Some(family) = &self.font_family {
+            class.add(family);
         }
 
         html! {

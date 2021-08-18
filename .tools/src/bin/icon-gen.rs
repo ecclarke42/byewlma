@@ -51,25 +51,23 @@ const TARGET_FILE: &str = "./src/components/icon_kind.rs";
 
 const BEFORE: &str = r#"
 ///! Automatically generated code. Do not manually edit
-use std::convert::AsRef;
-use strum::AsRefStr;
+use strum::IntoStaticStr;
 
 impl IconKind {
-    pub fn name(&self) -> String {
+    pub fn name(&self) -> &'static str {
         let kind = *self;
-        let name = if let IconKind::Custom(name) = kind {
+        if let IconKind::Custom(name) = kind {
             name
         } else {
-            kind.as_ref()
-        };
-        format!("fa-{}", name)
+            kind.into()
+        }
     }
 }
 
 /// A Fontawesome free/solid icon.
 ///
 /// There are a lot (>1000) possible icons here,
-#[derive(Debug, AsRefStr, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, IntoStaticStr, Clone, Copy, PartialEq, Eq)]
 pub enum IconKind {
     #[strum(disabled)]
     Custom(&'static str),

@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 /// Bulma [Container](https://bulma.io/documentation/layout/container/) Layout Element
 pub type Container = Pure<PureContainer>;
@@ -6,13 +6,13 @@ pub type Container = Pure<PureContainer>;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct PureContainer {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<String>,
+    pub style: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub children: Children,
@@ -25,46 +25,38 @@ pub struct PureContainer {
     pub width: Option<ContainerWidth>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
 pub enum ContainerWidth {
     /// Full width until $widescreen breakpoint
+    #[bulma_class = "is-widescreen"]
     FullUntilWidescreen,
 
     /// Full width until $fullhd breakpoint
+    #[bulma_class = "is-fullhd"]
     FullUntilFullHd,
 
     /// Max width at $desktop breakpoint and wider
+    #[bulma_class = "is-max-desktop"]
     MaxDesktop,
 
     /// Maxwidth at $widescreen breakpoint and wider
+    #[bulma_class = "is-max-widescreen"]
     MaxWidescreen,
 
     /// Always full width, but with a 32px margin on each side
+    #[bulma_class = "is-fluid"]
     Fluid,
 }
 
 impl PureComponent for PureContainer {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("container");
+        unsafe {
+            class.unchecked_push("container");
+        }
 
-        match &self.width {
-            None => {}
-            Some(ContainerWidth::FullUntilWidescreen) => {
-                class.push("is-widescreen");
-            }
-            Some(ContainerWidth::FullUntilFullHd) => {
-                class.push("is-fullhd");
-            }
-            Some(ContainerWidth::MaxDesktop) => {
-                class.push("is-max-desktop");
-            }
-            Some(ContainerWidth::MaxWidescreen) => {
-                class.push("is-max-widescreen");
-            }
-            Some(ContainerWidth::Fluid) => {
-                class.push("is-fluid");
-            }
+        if let Some(width) = &self.width {
+            class.add(width);
         }
 
         html! {

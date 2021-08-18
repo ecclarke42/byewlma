@@ -1,4 +1,4 @@
-use crate::{components::prelude::*, SemanticOrLightColor};
+use crate::{innerlude::*, SemanticOrLightColor};
 
 /// Bulma [Notification](https://bulma.io/documentation/elements/notification/) Element
 pub type Notification = Pure<PureNotification>;
@@ -6,13 +6,13 @@ pub type Notification = Pure<PureNotification>;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct PureNotification {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<String>,
+    pub style: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub children: Children,
@@ -32,15 +32,20 @@ pub struct PureNotification {
 impl PureComponent for PureNotification {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("notification");
+        unsafe {
+            class.unchecked_push("notification");
+        }
 
-        match self.color {
+        match &self.color {
             None => {}
             Some(SemanticOrLightColor::Normal(color)) => {
-                class.push(color.is_class());
+                class.add(color);
             }
             Some(SemanticOrLightColor::Light(color)) => {
-                class.push(classes!(color.is_class(), "is-light"))
+                class.add(color);
+                unsafe {
+                    class.unchecked_push("is-light");
+                }
             }
         }
 

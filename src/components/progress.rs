@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::{innerlude::*, SemanticColor, Size};
 
 /// Bulma [Progress](https://bulma.io/documentation/elements/block/) Element
 pub type Progress = Pure<PureProgress>;
@@ -6,18 +6,21 @@ pub type Progress = Pure<PureProgress>;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct PureProgress {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<String>,
+    pub style: Option<Cow<'static, str>>,
 
     pub state: ProgressState,
 
     #[prop_or_default]
     pub size: Option<Size>,
+
+    #[prop_or_default]
+    pub color: Option<SemanticColor>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -35,10 +38,16 @@ impl Default for ProgressState {
 impl PureComponent for PureProgress {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("progress");
+        unsafe {
+            class.unchecked_push("progress");
+        }
 
         if let Some(size) = &self.size {
-            class.push(size.class())
+            class.add(size);
+        }
+
+        if let Some(color) = &self.color {
+            class.add(color);
         }
 
         match self.state {

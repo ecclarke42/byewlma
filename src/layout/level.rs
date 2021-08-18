@@ -1,6 +1,6 @@
-use yew::html::ChildrenRenderer;
-
 use crate::components::prelude::*;
+use std::borrow::Cow;
+use yew::html::ChildrenRenderer;
 
 // TODO: doesn't seem like this works for pureComponents with current Pure<T>
 
@@ -10,13 +10,13 @@ pub type SplitLevel = Pure<PureSplitLevel>;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct PureSplitLevel {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<String>,
+    pub style: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub children: ChildrenRenderer<LevelChild>,
@@ -25,7 +25,9 @@ pub struct PureSplitLevel {
 impl PureComponent for PureSplitLevel {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("level");
+        unsafe {
+            class.unchecked_push("level");
+        }
 
         // TODO: collect children into two?
         // self.children.into_iter().map(|child| {
@@ -55,7 +57,9 @@ pure_props! {
 impl PureComponent for PureLevelLeft {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("level-left");
+        unsafe {
+            class.unchecked_push("level-left");
+        }
         html! {
             <div id={self.id.clone()} class={class} style={self.style.clone()}>
                 {for self.children.iter().map(|child| html! {
@@ -76,7 +80,9 @@ pure_props! {
 impl PureComponent for PureLevelRight {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("level-right");
+        unsafe {
+            class.unchecked_push("level-right");
+        }
         html! {
             <div id={self.id.clone()} class={class} style={self.style.clone()}>
                 {for self.children.iter().map(|child| html! {
@@ -116,7 +122,9 @@ pure_props! {
 impl PureComponent for PureCenteredLevel {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("level");
+        unsafe {
+            class.unchecked_push("level");
+        }
         html! {
             <div id={self.id.clone()} class={class} style={self.style.clone()}>
                 {for self.children.iter().map(|child| html! {

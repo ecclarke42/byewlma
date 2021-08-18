@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::{helpers::Size, innerlude::*};
 
 pure_props! {
     /// Bulma [Content](https://bulma.io/documentation/elements/content/) Element
@@ -11,10 +11,10 @@ pure_props! {
 impl PureComponent for PureContent {
     fn render(&self) -> Html {
         let mut class = self.class.clone();
-        class.push("content");
+        unsafe { class.unchecked_push("content") }
 
-        if let Some(size) = self.size {
-            class.push(size);
+        if let Some(size) = &self.size {
+            class.add(size);
         }
 
         html! {

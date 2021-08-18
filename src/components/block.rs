@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 pure_props! {
     /// Bulma [Block](https://bulma.io/documentation/elements/block/) Element

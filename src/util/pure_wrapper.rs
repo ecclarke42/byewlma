@@ -1,5 +1,4 @@
 // TODO: use these in more places? crate-specific pure?
-use yewtil::Pure;
 
 macro_rules! pure_props {
     {
@@ -18,13 +17,13 @@ macro_rules! pure_props {
             #[derive(Debug, Default, PartialEq, Clone, Properties)]
             pub struct [<Pure $name>] {
                 #[prop_or_default]
-                pub id: Option<String>,
+                pub id: Option<Cow<'static, str>>,
 
                 #[prop_or_default]
                 pub class: Classes,
 
                 #[prop_or_default]
-                pub style: Option<String>,
+                pub style: Option<Cow<'static, str>>,
 
                 #[prop_or_default]
                 pub children: Children,

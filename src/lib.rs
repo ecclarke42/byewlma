@@ -1,44 +1,32 @@
 #[macro_use]
 mod util {
+
+    #[macro_use]
+    pub mod class;
+
     #[macro_use]
     pub mod pure_wrapper;
 }
 
-pub trait BulmaClass {
-    //: Into<yew::Classes> {
-    fn class(&self) -> &'static str;
+mod innerlude {
+    pub(crate) use std::borrow::Cow;
 
-    fn to_yew(&self) -> yew::Classes {
-        yew::Classes::from(self.class())
-    }
+    pub(crate) use byewlma_macros::BulmaClass;
+    pub(crate) use yew::prelude::*;
+    pub(crate) use yewtil::{Pure, PureComponent};
+
+    pub(crate) use crate::util::class::{AddClass, BulmaClass};
 }
-// impl<T: BulmaClass> From<&T> for yew::Classes {
-//     fn from(bulma: &T) -> Self {
-//         bulma.to_yew()
-//     }
-// }
-// impl<T: BulmaClass> Into<yew::Classes> for T {
-//     fn into(self) -> yew::Classes {
-//         self.to_yew()
-//     }
-// }
 
 mod helpers;
 pub use helpers::*;
 
 pub mod components {
-    pub mod prelude {
-        pub use yew::prelude::*;
-        pub use yewtil::{NeqAssign, Pure, PureComponent};
-
-        pub use crate::helpers::{Color, SemanticColor, Size};
-    }
-
     mod icon_kind;
 
     pub mod block;
     pub mod r#box;
-    // TODO: pub mod breadcrumb\
+    // TODO: pub mod breadcrumb;
     pub mod button;
     pub mod buttons;
     // TODO: pub mod card;
@@ -78,18 +66,7 @@ pub mod components {
     pub use title::{Subtitle, Title};
 }
 
-pub mod form {
-
-    pub mod field;
-    pub mod form;
-    pub mod input;
-    pub mod textarea;
-
-    pub use field::Field;
-    pub use form::FormRow;
-    pub use input::*;
-    pub use textarea::TextArea;
-}
+pub mod form;
 
 pub mod layout {
     pub mod columns;

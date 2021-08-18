@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 /// Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
 ///

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use byewlma::{
     components::{Subtitle, Title},
-    form::{Field, PasswordInput, TextInput},
+    form::{Control, Field, PasswordInput, TextInput},
     prelude::*,
 };
 use yew::prelude::*;
@@ -38,10 +38,14 @@ impl Component for FormInputShowcase {
                 <Section>
                     <Subtitle>{"Input Types"}</Subtitle>
                     <Field label={Some(Cow::<'static, str>::from("Text"))}>
-                        <TextInput />
+                        <Control>
+                            <TextInput />
+                        </Control>
                     </Field>
                     <Field label={Some(Cow::<'static, str>::from("Password"))}>
-                        <PasswordInput />
+                        <Control>
+                            <PasswordInput />
+                        </Control>
                     </Field>
                     // <Field label={"Color"}>
                     //     <Input<input::types::Color> />

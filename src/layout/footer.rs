@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 pure_props! {
     /// Bulma [Footer](https://bulma.io/documentation/layout/footer/) Layout Element

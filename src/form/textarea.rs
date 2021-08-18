@@ -1,12 +1,4 @@
-use std::borrow::Cow;
-
-use derive_more::From;
-use yew::{
-    html::ChildrenRenderer,
-    virtual_dom::{VChild, VNode},
-};
-
-use crate::components::{icon::IconProps, prelude::*, Icon};
+use crate::{innerlude::*, SemanticColor, Size};
 
 // TODO: implement cursor for really big textareas?
 
@@ -15,13 +7,24 @@ pub type TextArea = Pure<PureTextArea>;
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
 pub struct PureTextArea {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
     pub style: Option<Cow<'static, str>>,
+
+    // TODO: tab_index
+    // TODO: name
+    #[prop_or_default]
+    pub name: Option<Cow<'static, str>>,
+    #[prop_or_default]
+    pub value: Option<String>,
+    #[prop_or_default]
+    pub on_input: Option<Callback<String>>,
+    #[prop_or_default]
+    pub on_change: Option<Callback<Option<String>>>,
 
     #[prop_or_default]
     pub rows: Option<u32>,
@@ -50,6 +53,7 @@ pub struct PureTextArea {
     pub is_readonly: bool,
     #[prop_or_default]
     pub is_static: bool,
+    // TODO On change/input
 }
 
 // TODO: more input style attrs (placeholder, etc)
@@ -60,10 +64,10 @@ impl PureComponent for PureTextArea {
         unsafe {
             class.unchecked_push("textarea");
             if let Some(color) = &self.color {
-                class.unchecked_push(color.is_class());
+                class.add(color);
             }
             if let Some(size) = &self.size {
-                class.unchecked_push(size.class());
+                class.add(size);
             }
             if self.force_hover {
                 class.unchecked_push("is-hovered");
@@ -79,14 +83,38 @@ impl PureComponent for PureTextArea {
             }
         }
 
+        let on_input = self
+            .on_input
+            .as_ref()
+            .map(|cb| cb.reform(|evt: InputData| evt.value));
+
+        let on_change = self.on_change.as_ref().map(|cb| {
+            cb.reform(|evt: ChangeData| {
+                if let ChangeData::Value(value) = evt {
+                    Some(value)
+                } else {
+                    None
+                }
+            })
+        });
+
         html! {
             <textarea
+                id={self.id.clone()}
                 class={class}
+                style={self.style.clone()}
+
+                value={self.value.clone()}
+                oninput={on_input}
+                onchange={on_change}
+
                 rows={self.rows.map(|rows| rows.to_string())}
                 placeholder={self.placeholder.clone()}
 
                 disabled={self.is_disabled}
                 readonly={self.is_readonly}
+
+
             />
         }
     }

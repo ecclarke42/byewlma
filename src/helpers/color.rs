@@ -1,3 +1,5 @@
+use crate::innerlude::*;
+
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Color {
     White,
@@ -7,31 +9,25 @@ pub enum Color {
     Semantic(ShadedSemanticColor),
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, BulmaClass)]
 pub enum SemanticColor {
+    #[bulma_class = "is-primary"]
     Primary,
+    #[bulma_class = "is-link"]
     Link,
+    #[bulma_class = "is-info"]
     Info,
+    #[bulma_class = "is-success"]
     Success,
+    #[bulma_class = "is-warning"]
     Warning,
+    #[bulma_class = "is-danger"]
     Danger,
 }
 
 impl SemanticColor {
     pub fn to_light(self) -> SemanticOrLightColor {
         SemanticOrLightColor::Light(self)
-    }
-
-    pub fn is_class(&self) -> &'static str {
-        use SemanticColor::*;
-        match self {
-            Primary => "is-primary",
-            Link => "is-link",
-            Info => "is-info",
-            Success => "is-success",
-            Warning => "is-warning",
-            Danger => "is-danger",
-        }
     }
 }
 

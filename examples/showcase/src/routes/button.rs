@@ -1,4 +1,7 @@
-use byewlma::{prelude::*, components::{Button, Title}};
+use byewlma::{
+    components::{Button, Title},
+    prelude::*,
+};
 use yew::{prelude::*, web_sys::Element};
 use yewtil::future::LinkFuture;
 

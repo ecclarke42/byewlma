@@ -1,10 +1,8 @@
-// TODO: buttons container
-
 // Validate all contents are buttons
 // Are-Sizes
 //https://bulma.io/documentation/elements/button/#sizes
 
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 /// Bulma [List of Buttons](https://bulma.io/documentation/elements/button/#list-of-buttons)
 pub type Buttons = Pure<PureButtons>;
@@ -12,13 +10,13 @@ pub type Buttons = Pure<PureButtons>;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct PureButtons {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<String>,
+    pub style: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub children: ChildrenWithProps<crate::components::Button>,

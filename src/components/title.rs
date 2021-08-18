@@ -1,4 +1,4 @@
-use crate::components::prelude::*;
+use crate::innerlude::*;
 
 pure_props! {
     /// Bulma [Title](https://bulma.io/documentation/elements/title/) Element
@@ -30,6 +30,8 @@ pub enum TitleLevel {
     H5,
     H6,
 }
+
+// TODO: tag based on Hx?
 
 impl TitleLevel {
     pub fn class(&self) -> &'static str {
