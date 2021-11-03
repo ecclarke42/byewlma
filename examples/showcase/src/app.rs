@@ -33,6 +33,8 @@ pub enum Route {
     // TODO: not found?
 }
 
+type RouteAnchor = yew_router::components::Link<Route>;
+
 impl Component for App {
     type Properties = ();
     type Message = ();
@@ -89,48 +91,40 @@ fn app_menu(props: &AppMenuProps) -> Html {
         <Menu>
             <MenuSection label={html!("Layout")}>
                 <MenuItem
-                    label={html!("Columns")}
-                    active={props.active_route == Route::LayoutColumns}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutColumns))}
+                    is_active={props.active_route == Route::LayoutColumns}
+                    label={html!(<RouteAnchor route={Route::LayoutColumns}>{"Columns"}</RouteAnchor>)}
                 />
                 <MenuItem
-                    label={html!("Container")}
-                    active={props.active_route == Route::LayoutContainer}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutContainer))}
+                    is_active={props.active_route == Route::LayoutContainer}
+                    label={html!(<RouteAnchor route={Route::LayoutContainer}>{"Container"}</RouteAnchor>)}
                 />
                 <MenuItem
-                    label={html!("Footer")}
-                    active={props.active_route == Route::LayoutFooter}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutFooter))}
+                    is_active={props.active_route == Route::LayoutFooter}
+                    label={html!(<RouteAnchor route={Route::LayoutFooter}>{"Footer"}</RouteAnchor>)}
                 />
                 <MenuItem
-                    label={html!("Hero")}
-                    active={props.active_route == Route::LayoutHero}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutHero))}
+                    is_active={props.active_route == Route::LayoutHero}
+                    label={html!(<RouteAnchor route={Route::LayoutHero}>{"Hero"}</RouteAnchor>)}
                 />
                 <MenuItem
-                    label={html!("Level")}
-                    active={props.active_route == Route::LayoutLevel}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutLevel))}
+                    is_active={props.active_route == Route::LayoutLevel}
+                    label={html!(<RouteAnchor route={Route::LayoutLevel}>{"Level"}</RouteAnchor>)}
                 />
                 <MenuItem
-                    label={html!("Section")}
-                    active={props.active_route == Route::LayoutSection}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutSection))}
+                    is_active={props.active_route == Route::LayoutSection}
+                    label={html!(<RouteAnchor route={Route::LayoutSection}>{"Section"}</RouteAnchor>)}
                 />
             </MenuSection>
             <MenuSection label={html!("Components")}>
                 <MenuItem
-                    label={html!("Button")}
-                    active={props.active_route == Route::Button}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::Button))}
+                    is_active={props.active_route == Route::Button}
+                    label={html!(<RouteAnchor route={Route::Button}>{"Button"}</RouteAnchor>)}
                 />
             </MenuSection>
             <MenuSection label={html!("Form")}>
                 <MenuItem
-                    label={html!("Input")}
-                    active={props.active_route == Route::FormInput}
-                    on_click={Callback::from(|_| yew_router::push_route(Route::FormInput))}
+                    is_active={props.active_route == Route::FormInput}
+                    label={html!(<RouteAnchor route={Route::FormInput}>{"Input"}</RouteAnchor>)}
                 />
             </MenuSection>
             <MenuSection label={html!("Helpers")}>

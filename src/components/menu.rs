@@ -123,7 +123,7 @@ pub fn menu_item(props: &MenuItemProps) -> Html {
 
     html! {
         <li id={props.id.clone()} class={props.class.clone()} style={props.style.clone()}>
-            <a class={classes!(if props.active { "is-active" } else { "" })}>
+            <a class={classes!(if props.is_active { "is-active" } else { "" })}>
                 { props.label.clone() }
             </a>
             { children }
