@@ -1,72 +1,43 @@
 use crate::innerlude::*;
 
-/// Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
-///
-/// A menu is used to wrap any number of MenuSection's
-pub struct Menu {
-    props: MenuProps,
-}
-
-/// An item group in the Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
-///
-/// A MenuSection can have an optional label (through the `label` property)
-/// and any number of MenuItems (which can be nested)
-pub struct MenuSection {
-    props: MenuSectionProps,
-}
-
-/// An item in the Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
-///
-/// MenuItem's can be nested to provide nested lists. Bulma officially only
-/// supports two levels of nesting, but it seems to work deeper.
-pub struct MenuItem {
-    props: MenuItemProps,
-}
-
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
+
     /// Css Classes to pass along to the root menu element
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
     pub children: ChildrenWithProps<MenuSection>,
 }
 
-impl Component for Menu {
-    type Properties = MenuProps;
-    type Message = ();
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if props != self.props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn view(&self) -> Html {
-        let mut class = self.props.class.clone();
-        class.push("menu");
-        html! { <aside class={class}>{ for self.props.children.iter() }</aside> }
-    }
+/// Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
+///
+/// A menu is used to wrap any number of MenuSection's
+#[function_component(Menu)]
+pub fn menu(props: &MenuProps) -> Html {
+    let mut class = props.class.clone();
+    class.push("menu");
+    html! { <aside id={props.id.clone()} class={class} style={props.style.clone()}>{ for props.children.iter() }</aside> }
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuSectionProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
+
     /// Css Classes to pass along to the menu section's <ul> list
     /// Classes can be directly passed to the label element when creating it
     #[prop_or_default]
     pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
 
     #[prop_or_default]
     pub label: Option<Html>,
@@ -75,58 +46,47 @@ pub struct MenuSectionProps {
     pub children: ChildrenWithProps<MenuItem>,
 }
 
-impl Component for MenuSection {
-    type Properties = MenuSectionProps;
-    type Message = ();
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn view(&self) -> Html {
-        let label = if let Some(label) = self.props.label.clone() {
-            html! {<p class="menu-label">{label}</p>}
-        } else {
-            html! {}
-        };
-        let children = if !self.props.children.is_empty() {
-            html! {
-                <ul class="menu-list">
-                    { for self.props.children.iter() }
-                </ul>
-            }
-        } else {
-            html! {}
-        };
+/// An item group in the Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
+///
+/// A MenuSection can have an optional label (through the `label` property)
+/// and any number of MenuItems (which can be nested)
+#[function_component(MenuSection)]
+pub fn menu_section(props: &MenuSectionProps) -> Html {
+    let label = if let Some(label) = props.label.clone() {
+        html! {<p class="menu-label">{label}</p>}
+    } else {
+        html! {}
+    };
+    let children = if !props.children.is_empty() {
         html! {
-            <>
-                { label }
-                { children }
-            </>
+            <ul class="menu-list">
+                { for props.children.iter() }
+            </ul>
         }
+    } else {
+        html! {}
+    };
+    html! {
+        <>
+            { label }
+            { children }
+        </>
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuItemProps {
     #[prop_or_default]
-    pub active: bool,
+    pub id: Option<Cow<'static, str>>,
 
     #[prop_or_default]
-    pub on_click: Option<Callback<()>>,
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
+    pub is_active: bool,
 
     pub label: Html,
 
@@ -134,41 +94,39 @@ pub struct MenuItemProps {
     pub children: ChildrenWithProps<MenuItem>,
 }
 
-impl Component for MenuItem {
-    type Properties = MenuItemProps;
-    type Message = ();
+#[derive(Debug, Clone, PartialEq)]
+pub enum MenuItemAction {
+    Click(Callback<()>),
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    Link(Cow<'static, str>),
+
+    None,
+}
+
+impl Default for MenuItemAction {
+    fn default() -> Self {
+        Self::None
     }
+}
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if props != self.props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
+/// An item in the Bulma [Menu](https://bulma.io/documentation/components/menu/) Component
+///
+/// MenuItem's can be nested to provide nested lists. Bulma officially only
+/// supports two levels of nesting, but it seems to work deeper.
+#[function_component(MenuItem)]
+pub fn menu_item(props: &MenuItemProps) -> Html {
+    let children = if !props.children.is_empty() {
+        html! { <ul>{ for props.children.iter() }</ul> }
+    } else {
+        html! {}
+    };
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn view(&self) -> Html {
-        let children = if !self.props.children.is_empty() {
-            html! { <ul>{ for self.props.children.iter() }</ul> }
-        } else {
-            html! {}
-        };
-        let onclick = self.props.on_click.as_ref().map(|cb| cb.reform(|_| ()));
-        html! {
-            <li>
-                <a class={if self.props.active {"is-active"} else {""}} onclick={onclick}>
-                { self.props.label.clone() }
-                </a>
-                { children }
-            </li>
-        }
+    html! {
+        <li id={props.id.clone()} class={props.class.clone()} style={props.style.clone()}>
+            <a class={classes!(if props.active { "is-active" } else { "" })}>
+                { props.label.clone() }
+            </a>
+            { children }
+        </li>
     }
 }

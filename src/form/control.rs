@@ -1,19 +1,13 @@
 use derive_more::From;
-use yew::{
-    html::ChildrenRenderer,
-    virtual_dom::{VChild, VNode},
-};
+use yew::virtual_dom::{VChild, VNode};
 
 use crate::{
     components::{icon::IconProps, Icon},
     innerlude::*,
 };
 
-/// Bulma [Control](https://bulma.io/documentation/form/general/) Element
-pub type Control = Pure<PureControl>;
-
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
-pub struct PureControl {
+pub struct ControlProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -42,54 +36,54 @@ pub struct PureControl {
 
 // TODO: make icons children? (max 3, <i><input><i>)
 
-impl PureComponent for PureControl {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
+/// Bulma [Control](https://bulma.io/documentation/form/general/) Element
+#[function_component(Control)]
+pub fn control(props: &ControlProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("control");
+    }
+
+    if props.expand {
+        unsafe { class.unchecked_push("is-expanded") }
+
+        // TODO: if child is select, use select "is-fullwidth"
+    }
+
+    let left_icon = if let Some(icon_props) = &props.left_icon {
+        let mut icon_props = icon_props.clone();
         unsafe {
-            class.unchecked_push("control");
+            class.unchecked_push("has-icons-left");
+            icon_props.class.unchecked_push("is-left");
         }
+        // TODO: Icon props/size?
 
-        if self.expand {
-            unsafe { class.unchecked_push("is-expanded") }
-
-            // TODO: if child is select, use select "is-fullwidth"
+        html! { <Icon ..icon_props />
+            // <span class="icon is-small is-left"> // TODO: icon size? and color?
+            //     <i class={classes!("fas", icon_kind.name())}/>
+            // </span>
         }
+    } else {
+        html! {}
+    };
 
-        let left_icon = if let Some(icon_props) = &self.left_icon {
-            let mut icon_props = icon_props.clone();
-            unsafe {
-                class.unchecked_push("has-icons-left");
-                icon_props.class.unchecked_push("is-left");
-            }
-            // TODO: Icon props/size?
-
-            html! { <Icon with icon_props />
-                // <span class="icon is-small is-left"> // TODO: icon size? and color?
-                //     <i class={classes!("fas", icon_kind.name())}/>
-                // </span>
-            }
-        } else {
-            html! {}
-        };
-
-        let right_icon = if let Some(icon_props) = &self.right_icon {
-            let mut icon_props = icon_props.clone();
-            unsafe {
-                class.unchecked_push("has-icons-right");
-                icon_props.class.unchecked_push("is-right");
-            }
-            html! { <Icon with icon_props /> }
-        } else {
-            html! {}
-        };
-
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                { for self.children.iter() }
-                { left_icon }
-                { right_icon }
-            </div>
+    let right_icon = if let Some(icon_props) = &props.right_icon {
+        let mut icon_props = icon_props.clone();
+        unsafe {
+            class.unchecked_push("has-icons-right");
+            icon_props.class.unchecked_push("is-right");
         }
+        html! { <Icon ..icon_props /> }
+    } else {
+        html! {}
+    };
+
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            { for props.children.iter() }
+            { left_icon }
+            { right_icon }
+        </div>
     }
 }
 
@@ -157,10 +151,10 @@ impl PartialEq for ControlChild {
     }
 }
 
-impl Into<Html> for ControlChild {
-    fn into(self) -> Html {
+impl From<ControlChild> for Html {
+    fn from(child: ControlChild) -> Self {
         use ControlChild::*;
-        match self {
+        match child {
             ColorInput(child) => child.into(),
             DateInput(child) => child.into(),
             DateTimeInput(child) => child.into(),

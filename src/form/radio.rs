@@ -33,10 +33,8 @@ use crate::innerlude::*;
 //     }
 // }
 
-pub type RadioButton<T> = Pure<PureRadioButton<T>>;
-
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
-pub struct PureRadioButton<T: Clone> {
+pub struct RadioButtonProps<T: Clone + PartialEq> {
     /// Id for the wrapping label
     #[prop_or_default]
     pub label_id: Option<Cow<'static, str>>,
@@ -69,24 +67,23 @@ pub struct PureRadioButton<T: Clone> {
 
 // TODO: name/value for form compatibility?
 
-impl<T: 'static + Clone + PartialEq> PureComponent for PureRadioButton<T> {
-    fn render(&self) -> Html {
-        let value = self.value.clone();
-        let callback = self
-            .on_changed
-            .clone()
-            .map(|cb| cb.reform(move |_| value.clone()));
+#[function_component(RadioButton)]
+pub fn radio_button<T: 'static + Clone + PartialEq>(props: &RadioButtonProps<T>) -> Html {
+    let value = props.value.clone();
+    let callback = props
+        .on_changed
+        .clone()
+        .map(|cb| cb.reform(move |_| value.clone()));
 
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("radio");
-        }
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("radio");
+    }
 
-        html! {
-            <label id={self.label_id.clone()} class={class} style={self.style.clone()}>
-                <input id={self.input_id.clone()} type="radio" name={self.group.clone()} checked={self.is_checked} disabled={self.is_disabled} onclick={callback} />
-                { self.children.clone() }
-            </label>
-        }
+    html! {
+        <label id={props.label_id.clone()} class={class} style={props.style.clone()}>
+            <input id={props.input_id.clone()} type="radio" name={props.group.clone()} checked={props.is_checked} disabled={props.is_disabled} onclick={callback} />
+            { props.children.clone() }
+        </label>
     }
 }

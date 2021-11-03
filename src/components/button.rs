@@ -3,42 +3,52 @@ use crate::{innerlude::*, Size};
 pub type Type = ButtonType;
 pub type Color = ButtonColor;
 
-pure_props! {
-    /// Bulma [Button](https://bulma.io/documentation/elements/button/) Element
-    pub struct Button {
-        // Button props
-        #[prop_or_default]
-        pub tag: ButtonType,
-        #[prop_or_default]
-        pub color: Option<ButtonColor>,
-        #[prop_or_default]
-        pub size: Option<Size>,
-        #[prop_or_default]
-        pub fullwidth: bool,
-        #[prop_or_default]
-        pub outlined: bool,
-        #[prop_or_default]
-        pub inverted: bool,
-        #[prop_or_default]
-        pub rounded: bool,
-        #[prop_or_default]
-        pub force_hovered: bool,
-        /// Note, this does not actually focus the button. It just provides it with
-        /// the focus css status
-        #[prop_or_default]
-        pub force_focused: bool,
-        #[prop_or_default]
-        pub force_active: bool,
-        #[prop_or_default]
-        pub loading: bool,
-        #[prop_or_default]
-        pub r#static: bool,
-        #[prop_or_default]
-        pub disabled: bool,
+#[derive(Debug, Default, PartialEq, Clone, Properties)]
+pub struct ButtonProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
 
-        #[prop_or_default]
-        pub on_click: Option<Callback<()>>,
-    }
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
+    pub children: Children,
+
+    // Button props
+    #[prop_or_default]
+    pub tag: ButtonType,
+    #[prop_or_default]
+    pub color: Option<ButtonColor>,
+    #[prop_or_default]
+    pub size: Option<Size>,
+    #[prop_or_default]
+    pub fullwidth: bool,
+    #[prop_or_default]
+    pub outlined: bool,
+    #[prop_or_default]
+    pub inverted: bool,
+    #[prop_or_default]
+    pub rounded: bool,
+    #[prop_or_default]
+    pub force_hovered: bool,
+    /// Note, this does not actually focus the button. It just provides it with
+    /// the focus css status
+    #[prop_or_default]
+    pub force_focused: bool,
+    #[prop_or_default]
+    pub force_active: bool,
+    #[prop_or_default]
+    pub loading: bool,
+    #[prop_or_default]
+    pub r#static: bool,
+    #[prop_or_default]
+    pub disabled: bool,
+
+    #[prop_or_default]
+    pub on_click: Option<Callback<()>>,
 }
 
 /// Tag for the button element
@@ -85,7 +95,8 @@ pub enum ButtonColor {
 }
 
 // const RESERVE_CLASSES: usize = 13;
-impl PureButton {
+
+impl ButtonProps {
     fn classes(&self) -> Classes {
         // TODO: reserve?
         let mut classes = self.class.clone();
@@ -178,56 +189,32 @@ impl PureButton {
     }
 }
 
-impl PureComponent for PureButton {
-    fn render(&self) -> Html {
-        let mut attrs = Vec::with_capacity(3);
-        let mut node = match &self.tag {
-            ButtonType::Anchor { href } => {
-                if let Some(href) = href {
-                    attrs.push(yew::virtual_dom::PositionalAttr::new(
-                        "href",
-                        href.to_owned(),
-                    ));
-                }
-                yew::virtual_dom::VTag::new("a")
-            }
-            ButtonType::Button => yew::virtual_dom::VTag::new("button"),
-            ButtonType::Reset => {
-                let mut node = yew::virtual_dom::VTag::new("input");
-                node.kind = Some("reset".into());
-                node
-            }
-            ButtonType::Submit => {
-                let mut node = yew::virtual_dom::VTag::new("button");
-                node.kind = Some("submit".into());
-                node
-            }
-        };
+/// Bulma [Button](https://bulma.io/documentation/elements/button/) Element
+#[function_component(Button)]
+pub fn button(props: &ButtonProps) -> Html {
+    let (tag, ty, href) = match &props.tag {
+        ButtonType::Anchor { href } => ("a", None, href.as_ref().cloned()),
+        ButtonType::Button => ("button", None, None),
+        ButtonType::Reset => ("input", Some("reset"), None),
+        ButtonType::Submit => ("button", Some("submit"), None),
+    };
 
-        // TODO: should we just construct classes as a string?
-        attrs.push(yew::virtual_dom::PositionalAttr::new(
-            "class",
-            self.classes().to_string(),
-        ));
+    // let disabled = if props.disabled { Some(true) } else { None };
+    let on_click = props.on_click.as_ref().map(|cb| cb.reform(|_| ()));
 
-        if self.disabled {
-            attrs.push(yew::virtual_dom::PositionalAttr::new_boolean(
-                "disabled", true,
-            ));
-        }
+    html! {
+        <@{tag}
+            id={props.id.clone()}
+            class={props.classes()}
+            style={props.style.clone()}
 
-        if let Some(callback) = &self.on_click {
-            node.listeners
-                .push(std::rc::Rc::new(yew::html::onclick::Wrapper::new(
-                    callback.reform(|_| ()),
-                )))
-        }
+            disabled={props.disabled} // Todo: check if this renders when false
+            onclick={on_click}
 
-        if !self.children.is_empty() {
-            node.add_children(self.children.clone());
-        }
-
-        node.attributes = yew::virtual_dom::Attributes::Vec(attrs);
-        yew::virtual_dom::VNode::VTag(Box::new(node))
+            type={ty}
+            href={href}
+        >
+            {for props.children.iter()}
+        </@>
     }
 }

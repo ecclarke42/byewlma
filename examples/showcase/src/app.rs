@@ -5,79 +5,68 @@ use byewlma::{
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-pub struct App {
-    link: ComponentLink<Self>,
-}
+pub struct App;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Switch)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Routable)]
 pub enum Route {
-    #[to = "/layout/columns"]
+    #[at("/layout/columns")]
     LayoutColumns,
-    #[to = "/layout/container"]
+    #[at("/layout/container")]
     LayoutContainer,
-    #[to = "/layout/footer"]
+    #[at("/layout/footer")]
     LayoutFooter,
-    #[to = "/layout/hero"]
+    #[at("/layout/hero")]
     LayoutHero,
-    #[to = "/layout/level"]
+    #[at("/layout/level")]
     LayoutLevel,
-    #[to = "/layout/section"]
+    #[at("/layout/section")]
     LayoutSection,
 
-    #[to = "/components/button"]
+    #[at("/components/button")]
     Button,
 
-    #[to = "/form/input"]
+    #[at("/form/input")]
     FormInput,
 
-    #[to = "/"]
+    #[at("/")]
     Home,
-}
-
-pub enum Msg {
-    Route(Route),
+    // TODO: not found?
 }
 
 impl Component for App {
     type Properties = ();
-    type Message = Msg;
+    type Message = ();
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        App { link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::Route(route) => {
-                // TODO?
-                // yew_router::push_route(self);
-                let mut r = String::new();
-                let state = wasm_bindgen::JsValue::NULL;
-                route.build_route_section::<()>(&mut r);
-                yew::utils::window()
-                    .history()
-                    .expect("failed to access history")
-                    .push_state_with_url(&state, "", Some(r.as_str()));
-                true
-            }
-        }
-    }
-
-    fn view(&self) -> Html {
-        let link = self.link.clone();
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <Section>
                 <Router<Route> render={
-                    Router::render(move |route: Route| {
+                    Router::render(move |route: &Route| {
                         html! {
                             <Columns>
-                                <Column size={columns::Size::Narrow}>{ Self::render_menu(link.clone(), &route) }</Column>
+                                <Column size={columns::Size::Narrow}>
+                                    <AppMenu active_route={*route} />
+                                </Column>
                                 <Column>
-                                    { Self::render_route(&route) }
+                                    {match route {
+                                        Route::Home => html! {"home"},
+
+                                        Route::LayoutColumns => html! { "columns" },
+                                        Route::LayoutContainer => html! { "container" },
+                                        Route::LayoutFooter => html! { "footer" },
+                                        Route::LayoutHero => html! { "hero" },
+                                        Route::LayoutLevel => html! { "level" },
+                                        Route::LayoutSection => html! { "section" },
+
+                                        // Route::Button => html! { <crate::routes::button::ButtonShowcase /> },
+                                        Route::Button => html! { "Button Showcase" }, // Syntax highlighter is reeaaaaally slow
+
+                                        Route::FormInput => html! { <crate::routes::form_input::FormInputShowcase /> },
+                                    }}
                                 </Column>
                             </Columns>
                         }
@@ -88,79 +77,65 @@ impl Component for App {
     }
 }
 
-impl App {
-    pub fn render_menu(link: ComponentLink<Self>, route: &Route) -> Html {
-        html! {
-            // TODO: navbar
-            <Menu>
-                <MenuSection label={html!{"Layout"}}>
-                    <MenuItem
-                        label={html!{"Columns"}}
-                        active={route == &Route::LayoutColumns}
-                        on_click={link.callback(|_| Msg::Route(Route::LayoutColumns))}
-                    />
-                    <MenuItem
-                        label={html!{"Container"}}
-                        active={route == &Route::LayoutContainer}
-                        on_click={link.callback(|_| Msg::Route(Route::LayoutContainer))}
-                    />
-                    <MenuItem
-                        label={html!{"Footer"}}
-                        active={route == &Route::LayoutFooter}
-                        on_click={link.callback(|_| Msg::Route(Route::LayoutFooter))}
-                    />
-                    <MenuItem
-                        label={html!{"Hero"}}
-                        active={route == &Route::LayoutHero}
-                        on_click={link.callback(|_| Msg::Route(Route::LayoutHero))}
-                    />
-                    <MenuItem
-                        label={html!{"Level"}}
-                        active={route == &Route::LayoutLevel}
-                        on_click={link.callback(|_| Msg::Route(Route::LayoutLevel))}
-                    />
-                    <MenuItem
-                        label={html!{"Section"}}
-                        active={route == &Route::LayoutSection}
-                        on_click={link.callback(|_| Msg::Route(Route::LayoutSection))}
-                    />
-                </MenuSection>
-                <MenuSection label={html!{"Components"}}>
-                    <MenuItem
-                        label={html!{"Button"}}
-                        active={route == &Route::Button}
-                        on_click={link.callback(|_| Msg::Route(Route::Button))}
-                    />
-                </MenuSection>
-                <MenuSection label={html!{"Form"}}>
-                    <MenuItem
-                        label={html!{"Input"}}
-                        active={route == &Route::FormInput}
-                        on_click={link.callback(|_| Msg::Route(Route::FormInput))}
-                    />
-                </MenuSection>
-                <MenuSection label={html!{"Helpers"}}>
+#[derive(Debug, Clone, Copy, PartialEq, Properties)]
+struct AppMenuProps {
+    active_route: Route,
+}
 
-                </MenuSection>
-            </Menu>
-        }
-    }
+#[function_component(AppMenu)]
+fn app_menu(props: &AppMenuProps) -> Html {
+    html! {
+        // TODO: navbar
+        <Menu>
+            <MenuSection label={html!("Layout")}>
+                <MenuItem
+                    label={html!("Columns")}
+                    active={props.active_route == Route::LayoutColumns}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutColumns))}
+                />
+                <MenuItem
+                    label={html!("Container")}
+                    active={props.active_route == Route::LayoutContainer}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutContainer))}
+                />
+                <MenuItem
+                    label={html!("Footer")}
+                    active={props.active_route == Route::LayoutFooter}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutFooter))}
+                />
+                <MenuItem
+                    label={html!("Hero")}
+                    active={props.active_route == Route::LayoutHero}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutHero))}
+                />
+                <MenuItem
+                    label={html!("Level")}
+                    active={props.active_route == Route::LayoutLevel}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutLevel))}
+                />
+                <MenuItem
+                    label={html!("Section")}
+                    active={props.active_route == Route::LayoutSection}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::LayoutSection))}
+                />
+            </MenuSection>
+            <MenuSection label={html!("Components")}>
+                <MenuItem
+                    label={html!("Button")}
+                    active={props.active_route == Route::Button}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::Button))}
+                />
+            </MenuSection>
+            <MenuSection label={html!("Form")}>
+                <MenuItem
+                    label={html!("Input")}
+                    active={props.active_route == Route::FormInput}
+                    on_click={Callback::from(|_| yew_router::push_route(Route::FormInput))}
+                />
+            </MenuSection>
+            <MenuSection label={html!("Helpers")}>
 
-    pub fn render_route(route: &Route) -> Html {
-        match route {
-            Route::Home => html! {"home"},
-
-            Route::LayoutColumns => html! { "columns" },
-            Route::LayoutContainer => html! { "container" },
-            Route::LayoutFooter => html! { "footer" },
-            Route::LayoutHero => html! { "hero" },
-            Route::LayoutLevel => html! { "level" },
-            Route::LayoutSection => html! { "section" },
-
-            // Route::Button => html! { <crate::routes::button::ButtonShowcase /> },
-            Route::Button => html! { "Button Showcase" }, // Syntax highlighter is reeaaaaally slow
-
-            Route::FormInput => html! { <crate::routes::form_input::FormInputShowcase /> },
-        }
+            </MenuSection>
+        </Menu>
     }
 }

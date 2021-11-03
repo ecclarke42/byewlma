@@ -22,8 +22,6 @@ impl std::fmt::Display for Data {
 
 /// Simple yew application that spawns a notification
 pub struct App {
-    link: ComponentLink<Self>,
-
     select_display: SelectDisplay<Data>,
 
     a_data: SelectState<Data>,
@@ -46,7 +44,7 @@ impl Component for App {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         let test_data = vec![
             Data {
                 name: String::from("First"),
@@ -79,7 +77,6 @@ impl Component for App {
         });
 
         Self {
-            link,
             select_display: SelectDisplay::new(|item: &Data| item.to_string()),
             a_data: SelectState::new(test_data.clone(), Selection::one(0), filter.clone()),
             b_data: SelectState::new(test_data.clone(), Selection::none(), filter.clone()),
@@ -87,11 +84,7 @@ impl Component for App {
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::SelectedA(index) => self.a_data.select(index),
             Msg::ClearedA(index) => self.a_data.deselect(index),
@@ -104,16 +97,17 @@ impl Component for App {
         }
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let link = ctx.link();
         html! {
             <main>
                 <div class="field">
                     <label class="label">{"Select Single, Non-Nullable Field"}</label>
                     <div class="control">
                         <Select<Data>
-                            state=self.a_data.clone()
-                            display=self.select_display.clone()
-                            onselected=self.link.callback(Msg::SelectedA)
+                            state={self.a_data.clone()}
+                            display={self.select_display.clone()}
+                            onselected={link.callback(Msg::SelectedA)}
                         />
                     </div>
                 </div>
@@ -121,9 +115,9 @@ impl Component for App {
                     <label class="label">{"Select Single, Nullable Field"}</label>
                     <div class="control">
                         <Select<Data>
-                            state=self.b_data.clone()
-                            display=self.select_display.clone()
-                            onselected=self.link.callback(Msg::SelectedB)
+                            state={self.b_data.clone()}
+                            display={self.select_display.clone()}
+                            onselected={link.callback(Msg::SelectedB)}
                         />
                     </div>
                 </div>
@@ -131,10 +125,10 @@ impl Component for App {
                     <label class="label">{"Select Multiple Fields"}</label>
                     <div class="control">
                         <Select<Data>
-                            state=self.c_data.clone()
-                            display=self.select_display.clone()
-                            onselected=self.link.callback(Msg::SelectedC)
-                            onremoved=self.link.callback(Msg::ClearedC)
+                            state={self.c_data.clone()}
+                            display={self.select_display.clone()}
+                            onselected={link.callback(Msg::SelectedC)}
+                            onremoved={link.callback(Msg::ClearedC)}
                         />
                     </div>
                 </div>
@@ -143,10 +137,10 @@ impl Component for App {
                     <div class="control">
                         <Select<Data>
                             omit_selected={true}
-                            state=self.c_data.clone()
-                            display=self.select_display.clone()
-                            onselected=self.link.callback(Msg::SelectedC)
-                            onremoved=self.link.callback(Msg::ClearedC)
+                            state={self.c_data.clone()}
+                            display={self.select_display.clone()}
+                            onselected={link.callback(Msg::SelectedC)}
+                            onremoved={link.callback(Msg::ClearedC)}
                         />
                     </div>
                 </div>

@@ -1,8 +1,5 @@
 use crate::innerlude::*;
 
-/// Bulma [Columns](https://bulma.io/documentation/columns/) Container
-pub type Columns = Pure<PureColumns>;
-
 pub type Size = ColumnSize;
 pub type Offset = ColumnOffset;
 pub type Gap = ColumnGap;
@@ -10,7 +7,7 @@ pub type Gap = ColumnGap;
 // TODO: responsiveness: https://bulma.io/documentation/columns/responsiveness/
 
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureColumns {
+pub struct ColumnsProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -68,49 +65,59 @@ impl ColumnGap {
     }
 }
 
-impl PureComponent for PureColumns {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("columns");
+/// Bulma [Columns](https://bulma.io/documentation/columns/) Container
+#[function_component(Columns)]
+pub fn columns(props: &ColumnsProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("columns");
 
-            if let Some(gap) = &self.gap {
-                class.add(gap);
-                if gap.is_variable() {
-                    class.unchecked_push("is-variable");
-                }
-            }
-
-            if self.center_vertical {
-                class.unchecked_push("is-vcentered");
-            }
-
-            if self.center_horizontal {
-                class.unchecked_push("is-centered");
-            }
-
-            if self.multiline {
-                class.unchecked_push("is-multiline");
+        if let Some(gap) = &props.gap {
+            class.add(gap);
+            if gap.is_variable() {
+                class.unchecked_push("is-variable");
             }
         }
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </div>
+        if props.center_vertical {
+            class.unchecked_push("is-vcentered");
         }
+
+        if props.center_horizontal {
+            class.unchecked_push("is-centered");
+        }
+
+        if props.multiline {
+            class.unchecked_push("is-multiline");
+        }
+    }
+
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </div>
     }
 }
 
-pure_props! {
-    /// Bulma [Column](https://bulma.io/documentation/columns/) Element
-    pub struct Column {
-        #[prop_or_default]
-        pub size: Option<ColumnSize>,
+#[derive(Debug, PartialEq, Properties)]
+pub struct ColumnProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
 
-        #[prop_or_default]
-        pub offset: Option<ColumnOffset>,
-    }
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
+    pub children: Children,
+
+    #[prop_or_default]
+    pub size: Option<ColumnSize>,
+
+    #[prop_or_default]
+    pub offset: Option<ColumnOffset>,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, BulmaClass)]
@@ -225,25 +232,25 @@ pub enum ColumnOffset {
     Twelve,
 }
 
-impl PureComponent for PureColumn {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("column");
-        }
+/// Bulma [Column](https://bulma.io/documentation/columns/) Element
+#[function_component(Column)]
+pub fn column(props: &ColumnProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("column");
+    }
 
-        if let Some(size) = &self.size {
-            class.add(size);
-        }
+    if let Some(size) = &props.size {
+        class.add(size);
+    }
 
-        if let Some(offset) = &self.offset {
-            class.add(offset);
-        }
+    if let Some(offset) = &props.offset {
+        class.add(offset);
+    }
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </div>
-        }
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </div>
     }
 }

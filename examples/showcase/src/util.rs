@@ -1,14 +1,14 @@
-macro_rules! snippet {
-    ($file:literal, $start:literal:$end:literal) => {{
-        let content = include_str!($file)
-            .lines()
-            .skip($start as usize)
-            .take(($end - $start) as usize)
-            .collect::<Vec<_>>()
-            .join("\n");
-        crate::util::hightlight_snippet(&content)
-    }};
-}
+// macro_rules! snippet {
+//     ($file:literal, $start:literal:$end:literal) => {{
+//         let content = include_str!($file)
+//             .lines()
+//             .skip($start as usize)
+//             .take(($end - $start) as usize)
+//             .collect::<Vec<_>>()
+//             .join("\n");
+//         crate::util::hightlight_snippet(&content)
+//     }};
+// }
 
 // TODO: Html highlighting on macro inside
 pub fn hightlight_snippet(content: &str) -> String {

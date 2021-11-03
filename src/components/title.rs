@@ -1,22 +1,42 @@
 use crate::innerlude::*;
 
-pure_props! {
-    /// Bulma [Title](https://bulma.io/documentation/elements/title/) Element
-    pub struct Title {
-        #[prop_or_default]
-        pub level: Option<TitleLevel>,
+#[derive(Debug, Default, PartialEq, Clone, Properties)]
+pub struct TitleProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>, // TODO: byewma macros ByewlmaProps for id, class, style, children?
 
-        #[prop_or_default]
-        pub spaced: bool,
-    }
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
+    pub children: Children,
+
+    #[prop_or_default]
+    pub level: Option<TitleLevel>,
+
+    #[prop_or_default]
+    pub spaced: bool,
 }
 
-pure_props! {
-    /// Bulma [Subtitle](https://bulma.io/documentation/elements/title/) Element
-    pub struct Subtitle {
-        #[prop_or_default]
-        pub level: Option<TitleLevel>,
-    }
+#[derive(Debug, Default, PartialEq, Clone, Properties)]
+pub struct SubtitleProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
+    pub children: Children,
+
+    #[prop_or_default]
+    pub level: Option<TitleLevel>,
 }
 
 pub type Level = TitleLevel;
@@ -46,40 +66,40 @@ impl TitleLevel {
     }
 }
 
-impl PureComponent for PureTitle {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        class.push("title");
+/// Bulma [Title](https://bulma.io/documentation/elements/title/) Element
+#[function_component(Title)]
+pub fn title(props: &TitleProps) -> Html {
+    let mut class = props.class.clone();
+    class.push("title");
 
-        if let Some(level) = self.level {
-            class.push(level.class());
-        }
+    if let Some(level) = props.level {
+        class.push(level.class());
+    }
 
-        if self.spaced {
-            class.push("is-spaced");
-        }
+    if props.spaced {
+        class.push("is-spaced");
+    }
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </div>
-        }
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </div>
     }
 }
 
-impl PureComponent for PureSubtitle {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        class.push("subtitle");
+/// Bulma [Subtitle](https://bulma.io/documentation/elements/title/) Element
+#[function_component(Subtitle)]
+pub fn subtitle(props: &SubtitleProps) -> Html {
+    let mut class = props.class.clone();
+    class.push("subtitle");
 
-        if let Some(level) = self.level {
-            class.push(level.class());
-        }
+    if let Some(level) = props.level {
+        class.push(level.class());
+    }
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </div>
-        }
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </div>
     }
 }

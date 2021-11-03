@@ -1,10 +1,7 @@
 use crate::{innerlude::*, SemanticOrLightColor};
 
-/// Bulma [Notification](https://bulma.io/documentation/elements/notification/) Element
-pub type Notification = Pure<PureNotification>;
-
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureNotification {
+pub struct NotificationProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -29,37 +26,37 @@ pub struct PureNotification {
     pub on_close: Option<Callback<()>>,
 }
 
-impl PureComponent for PureNotification {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("notification");
-        }
+/// Bulma [Notification](https://bulma.io/documentation/elements/notification/) Element
+#[function_component(Notification)]
+pub fn notification(props: &NotificationProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("notification");
+    }
 
-        match &self.color {
-            None => {}
-            Some(SemanticOrLightColor::Normal(color)) => {
-                class.add(color);
+    match &props.color {
+        None => {}
+        Some(SemanticOrLightColor::Normal(color)) => {
+            class.add(color);
+        }
+        Some(SemanticOrLightColor::Light(color)) => {
+            class.add(color);
+            unsafe {
+                class.unchecked_push("is-light");
             }
-            Some(SemanticOrLightColor::Light(color)) => {
-                class.add(color);
-                unsafe {
-                    class.unchecked_push("is-light");
-                }
-            }
         }
+    }
 
-        let close_button = if let Some(callback) = &self.on_close {
-            html! { <button class="delete" onclick={callback.reform(|_|())}/> }
-        } else {
-            html! {}
-        };
+    let close_button = if let Some(callback) = &props.on_close {
+        html! { <button class="delete" onclick={callback.reform(|_|())}/> }
+    } else {
+        html! {}
+    };
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                { close_button }
-                { for self.children.iter() }
-            </div>
-        }
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            { close_button }
+            { for props.children.iter() }
+        </div>
     }
 }

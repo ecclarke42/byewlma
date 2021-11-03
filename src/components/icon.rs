@@ -1,17 +1,19 @@
 use yew::Callback;
 
 pub use super::icon_kind::IconKind;
-use crate::{helpers::Color, innerlude::*};
-
-#[derive(Debug, Clone)]
-pub struct Icon {
-    props: IconProps,
-}
+use crate::{helpers::Color, innerlude::*, Size};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct IconProps {
     #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
+
+    #[prop_or_default]
     pub class: Classes,
+
+    // TODO: implement
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
 
     /// Either an IconKind or a tuple (IconKind, IconKind) to indicate stacked
     /// icons
@@ -19,6 +21,14 @@ pub struct IconProps {
     // pub kind: IconStack,
     #[prop_or_default]
     pub color: Option<Color>,
+
+    /// Container size
+    #[prop_or_default]
+    pub size: Option<Size>,
+
+    /// Icon Size. Inferred from [`size`] if unset. You probably don't need this
+    #[prop_or_default]
+    pub icon_size: Option<IconSize>,
 
     #[prop_or_default]
     pub text: Option<String>,
@@ -69,8 +79,49 @@ impl yew::html::IntoPropValue<IconStack> for (IconKind, IconKind) {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IconSize {}
+/// Font-Awesome Size
+#[derive(Debug, Clone, Copy, PartialEq, Eq, BulmaClass)]
+pub enum IconSize {
+    /// `fa-xs: 0.75em`
+    #[bulma_class = "fa-xs"]
+    ExtraSmall,
+
+    /// `fa-sm: 0.875em`
+    #[bulma_class = "fa-sm"]
+    Small,
+
+    /// `fa-lg: 1.33em`
+    #[bulma_class = "fa-lg"]
+    Large,
+
+    /// `fa-2x: 2em`
+    #[bulma_class = "fa-2x"]
+    X2,
+    /// `fa-3x: 3em`
+    #[bulma_class = "fa-3x"]
+    X3,
+    /// `fa-4x: 4em`
+    #[bulma_class = "fa-4x"]
+    X4,
+    /// `fa-5x: 5em`
+    #[bulma_class = "fa-5x"]
+    X5,
+    /// `fa-6x: 6em`
+    #[bulma_class = "fa-6x"]
+    X6,
+    /// `fa-7x: 7em`
+    #[bulma_class = "fa-7x"]
+    X7,
+    /// `fa-8x: 8em`
+    #[bulma_class = "fa-8x"]
+    X8,
+    /// `fa-9x: 9em`
+    #[bulma_class = "fa-9x"]
+    X9,
+    /// `fa-10x: 10em`
+    #[bulma_class = "fa-10x"]
+    X10,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IconRotation {
@@ -105,71 +156,78 @@ pub enum IconPull {
     Right,
 }
 
-impl Component for Icon {
-    type Properties = IconProps;
-    type Message = ();
+#[function_component(Icon)]
+pub fn icon(props: &IconProps) -> Html {
+    // TODO
+    // match (self.props.rotate, self.props.flip) {
+    //     (Some(rotate), Some(flip)) => {}
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    //     (Some(rotate), None) => {}
+
+    //     (None, Some(flip)) => {}
+
+    //     (None, None) => {}
+    // }
+
+    // match self.props.kind {
+    //     IconStack::Single(kind) => {}
+
+    //     IconStack::Stacked { bottom, top } => {}
+    // }
+
+    let color = props.color.map(|c| c.text_class()).unwrap_or_default();
+
+    let mut span_class = props.class.clone();
+    unsafe {
+        span_class.unchecked_push("icon");
+        span_class.unchecked_push(color);
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if props != self.props {
-            self.props = props;
-            true
-        } else {
-            false
+    let mut i_class = classes!("fas");
+
+    if let Some(animate) = &props.animate {
+        match animate {
+            IconAnimation::Spin => unsafe { i_class.unchecked_push("fa-spin") },
+            IconAnimation::Pulse => unsafe { i_class.unchecked_push("fa-pulse") },
         }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
+    if let Some(size) = &props.size {
+        if !matches!(size, Size::Normal) {
+            unsafe { span_class.unchecked_push(size.class()) }
+        }
+    }
+    if let Some(size) = props.icon_size.or(props
+        .size
+        .as_ref()
+        .map(|s| match s {
+            Size::Small | Size::Normal => None,
+            Size::Medium => Some(IconSize::Large),
+            Size::Large => Some(IconSize::X2),
+        })
+        .flatten())
+    {
+        unsafe { i_class.unchecked_push(size.class()) }
     }
 
-    fn view(&self) -> Html {
-        // TODO
-        // match (self.props.rotate, self.props.flip) {
-        //     (Some(rotate), Some(flip)) => {}
+    // TODO: id on span vs text span?
+    let icon = html! {
+        <span id={props.id.clone()} class={span_class} onclick={props.on_click.clone()}>
+            <i class={i_class}/>
+        </span>
+    };
 
-        //     (Some(rotate), None) => {}
-
-        //     (None, Some(flip)) => {}
-
-        //     (None, None) => {}
-        // }
-
-        // match self.props.kind {
-        //     IconStack::Single(kind) => {}
-
-        //     IconStack::Stacked { bottom, top } => {}
-        // }
-
-        let color = self.props.color.map(|c| c.text_class()).unwrap_or_default();
-
-        let mut span_class = self.props.class.clone();
-        unsafe {
-            span_class.unchecked_push("icon");
-            span_class.unchecked_push(color);
-        }
-
-        let icon = html! {
-            <span class={span_class} onclick={self.props.on_click.clone()}>
-                <i class={classes!("fas", self.props.kind.name())}/>
+    if let Some(text) = &props.text {
+        html! {
+            <span class={color}>
+                <div>
+                    <p>{icon}</p>
+                    <p>{text}</p>
+                </div>
             </span>
-        };
-
-        if let Some(text) = &self.props.text {
-            html! {
-                <span class={color}>
-                    <div>
-                        <p>{icon}</p>
-                        <p>{text}</p>
-                    </div>
-                </span>
-            }
-        } else {
-            icon
         }
+    } else {
+        icon
     }
 }
 

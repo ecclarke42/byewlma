@@ -1,4 +1,5 @@
 use yew::prelude::*;
+use yew_agent::{Bridge, Bridged};
 
 use super::{
     Notification, NotificationAgent, NotificationAgentInput, NotificationAgentOutput,
@@ -6,13 +7,12 @@ use super::{
 };
 
 pub struct NotificationConsumer {
-    link: ComponentLink<Self>,
     _bridge: Box<dyn Bridge<NotificationAgent>>,
     notifications: NotificationCollection,
 }
 
 pub enum Msg {
-    ServiceMsg(NotificationAgentOutput),
+    Service(NotificationAgentOutput),
 
     Closed(Position, usize, Option<Callback<()>>),
     TimedOut(Position, usize, Option<Callback<()>>),
@@ -22,23 +22,18 @@ impl Component for NotificationConsumer {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let mut bridge = NotificationAgent::bridge(link.callback(Msg::ServiceMsg));
+    fn create(ctx: &Context<Self>) -> Self {
+        let mut bridge = NotificationAgent::bridge(ctx.link().callback(Msg::Service));
         bridge.send(NotificationAgentInput::RegisterConsumer);
         Self {
-            link,
             _bridge: bridge,
             notifications: NotificationCollection::new(),
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::ServiceMsg(msg) => match msg {
+            Msg::Service(msg) => match msg {
                 NotificationAgentOutput::New(mut props) => {
                     let position = props.position;
                     let id = self.notifications.next_id(position);
@@ -47,13 +42,13 @@ impl Component for NotificationConsumer {
                     // this component, so we can control rendering
                     let callback = props.on_closed.take();
                     props.on_closed = Some(
-                        self.link
+                        ctx.link()
                             .callback_once(move |_| Msg::Closed(position, id, callback)),
                     );
 
                     let callback = props.on_timeout.take();
                     props.on_timeout = Some(
-                        self.link
+                        ctx.link()
                             .callback_once(move |_| Msg::TimedOut(position, id, callback)),
                     );
 
@@ -66,12 +61,12 @@ impl Component for NotificationConsumer {
                     let id = self.notifications.next_id(position);
                     let callback = props.on_closed.take();
                     props.on_closed = Some(
-                        self.link
+                        ctx.link()
                             .callback_once(move |_| Msg::Closed(position, id, callback)),
                     );
                     let callback = props.on_timeout.take();
                     props.on_timeout = Some(
-                        self.link
+                        ctx.link()
                             .callback_once(move |_| Msg::TimedOut(position, id, callback)),
                     );
                     self.notifications.insert(id, Some(tag), position, props);
@@ -84,7 +79,6 @@ impl Component for NotificationConsumer {
                 }
             },
             Msg::Closed(position, id, callback) => {
-                yew::services::ConsoleService::log("closed");
                 self.notifications.remove_id(position, id);
                 if let Some(callback) = callback {
                     callback.emit(());
@@ -92,7 +86,6 @@ impl Component for NotificationConsumer {
                 true
             }
             Msg::TimedOut(position, id, callback) => {
-                yew::services::ConsoleService::log("timed out");
                 self.notifications.remove_id(position, id);
                 if let Some(callback) = callback {
                     callback.emit(());
@@ -102,7 +95,7 @@ impl Component for NotificationConsumer {
         }
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         // TODO: conditionally render position divs
 
         let (top_left, top_right, bottom_left, bottom_right) = self.notifications.by_position();
@@ -243,7 +236,7 @@ impl NotificaitonList {
                 <div class={position.style()}>
                     { self.items.iter().map(|(id, _tag, props)| {
                         let props = props.clone();
-                        html! { <Notification key={*id} with props /> }
+                        html! { <Notification key={*id} ..props /> }
                     } ).collect::<Html>() }
                 </div>
             }

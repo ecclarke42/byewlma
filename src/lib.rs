@@ -13,7 +13,6 @@ mod innerlude {
 
     pub(crate) use byewlma_macros::BulmaClass;
     pub(crate) use yew::prelude::*;
-    pub(crate) use yewtil::{Pure, PureComponent};
 
     pub(crate) use crate::util::class::{AddClass, BulmaClass};
 }
@@ -90,3 +89,6 @@ pub mod prelude {
     // pub use crate::form::*; // InputValue
     pub use crate::{helpers::*, layout::*};
 }
+
+// Re-export Yew
+pub use yew;

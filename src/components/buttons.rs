@@ -4,11 +4,8 @@
 
 use crate::innerlude::*;
 
-/// Bulma [List of Buttons](https://bulma.io/documentation/elements/button/#list-of-buttons)
-pub type Buttons = Pure<PureButtons>;
-
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureButtons {
+pub struct ButtonsProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -42,31 +39,31 @@ impl Default for ButtonsAlignment {
     }
 }
 
-impl PureComponent for PureButtons {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        class.push("buttons");
+/// Bulma [List of Buttons](https://bulma.io/documentation/elements/button/#list-of-buttons)
+#[function_component(Buttons)]
+pub fn buttons(props: &ButtonsProps) -> Html {
+    let mut class = props.class.clone();
+    class.push("buttons");
 
-        if self.attached {
-            class.push("has-addons");
+    if props.attached {
+        class.push("has-addons");
+    }
+
+    match props.alignment {
+        ButtonsAlignment::Left => {}
+        ButtonsAlignment::Center => {
+            class.push("is-centered");
         }
-
-        match self.alignment {
-            ButtonsAlignment::Left => {}
-            ButtonsAlignment::Center => {
-                class.push("is-centered");
-            }
-            ButtonsAlignment::Right => {
-                class.push("is-right");
-            }
+        ButtonsAlignment::Right => {
+            class.push("is-right");
         }
+    }
 
-        // TODO: is-selected
+    // TODO: is-selected
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </div>
-        }
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </div>
     }
 }

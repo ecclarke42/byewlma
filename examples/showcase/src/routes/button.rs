@@ -2,13 +2,10 @@ use byewlma::{
     components::{Button, Title},
     prelude::*,
 };
-use yew::{prelude::*, web_sys::Element};
-use yewtil::future::LinkFuture;
+use yew::prelude::*;
 
 #[derive(Debug)]
 pub struct ButtonShowcase {
-    link: ComponentLink<Self>,
-
     simple_button_code_ref: NodeRef,
     simple_button_code_content: Option<String>,
 }
@@ -22,8 +19,9 @@ const FILE_SOURCE: &str = include_str!("button.rs");
 impl Component for ButtonShowcase {
     type Properties = ();
     type Message = ButtonShowcaseMsg;
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        link.send_future(async {
+
+    fn create(ctx: &Context<Self>) -> Self {
+        ctx.link().send_future(async {
             let simple_button_content = FILE_SOURCE
                 .lines()
                 .skip(SIMPLE_BUTTON_CONTENT_START as usize)
@@ -35,15 +33,12 @@ impl Component for ButtonShowcase {
             ButtonShowcaseMsg::LoadedSimpleButtonContent(syntaxed_simple_button_content)
         });
         Self {
-            link,
             simple_button_code_ref: NodeRef::default(),
             simple_button_code_content: None,
         }
     }
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             // just force re-render
             ButtonShowcaseMsg::LoadedSimpleButtonContent(content) => {
@@ -52,7 +47,8 @@ impl Component for ButtonShowcase {
             }
         }
     }
-    fn view(&self) -> Html {
+
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <>
                 <Hero color={SemanticColor::Primary}>
@@ -69,11 +65,12 @@ impl Component for ButtonShowcase {
             </>
         }
     }
-    fn rendered(&mut self, _first_render: bool) {
+
+    fn rendered(&mut self, _ctx: &Context<Self>, _first_render: bool) {
         if let Some(content) = &self.simple_button_code_content {
             let elem = self
                 .simple_button_code_ref
-                .cast::<Element>()
+                .cast::<web_sys::Element>()
                 .expect("failed to cast node ref to element");
             elem.set_inner_html(content.as_str());
         }
@@ -81,38 +78,23 @@ impl Component for ButtonShowcase {
 }
 
 const SIMPLE_BUTTON_CONTENT_START: u32 = line!();
-pub struct SimpleButton {
-    link: ComponentLink<Self>,
-    clicks: u32,
-}
-pub enum SimpleButtonMsg {
-    Clicked,
-}
-impl Component for SimpleButton {
-    type Properties = ();
-    type Message = SimpleButtonMsg;
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link, clicks: 0 }
-    }
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            SimpleButtonMsg::Clicked => {
-                self.clicks += 1;
-                true
-            }
-        }
-    }
-    fn view(&self) -> Html {
-        html! {
-            <Button on_click={self.link.callback(|_| SimpleButtonMsg::Clicked)}>
-                {"Clicked "}
-                {self.clicks}
-                {" times!"}
-            </Button>
-        }
+
+#[function_component(SimpleButton)]
+pub fn simple_button(_props: &()) -> Html {
+    let clicks = use_state(|| 0u32);
+
+    let on_click = {
+        let clicks = clicks.clone();
+        Callback::from(move |_| clicks.set(*clicks + 1))
+    };
+
+    html! {
+        <Button {on_click}>
+            {"Clicked "}
+            { *clicks }
+            {" times!"}
+        </Button>
     }
 }
+
 const SIMPLE_BUTTON_CONTENT_LINES: u32 = line!() - SIMPLE_BUTTON_CONTENT_START - 1;

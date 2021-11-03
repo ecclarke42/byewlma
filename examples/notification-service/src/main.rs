@@ -10,7 +10,6 @@ fn main() {
 /// Simple yew application that spawns a notification
 pub struct App {
     notification_service: NotificationService,
-    link: ComponentLink<Self>,
 }
 
 pub enum Msg {
@@ -26,18 +25,13 @@ impl Component for App {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             notification_service: NotificationService::new(),
-            link,
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::NotifyTL => {
                 self.notification_service.spawn(
@@ -107,19 +101,20 @@ impl Component for App {
         }
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let link = ctx.link();
         html! {
             <main class="byewlma-msg-svc-parent">
                 <h1>{"Notification Service Example"}</h1>
                 <p>{"Click the below buttons to spawn a notification at the given location"}</p>
                 <table>
                     <tr>
-                        <td><button onclick={self.link.callback(|_| Msg::NotifyTL)}>{"Notify Top Left"}</button></td>
-                        <td><button onclick={self.link.callback(|_| Msg::NotifyTR)}>{"Notify Top Right"}</button></td>
+                        <td><button onclick={link.callback(|_| Msg::NotifyTL)}>{"Notify Top Left"}</button></td>
+                        <td><button onclick={link.callback(|_| Msg::NotifyTR)}>{"Notify Top Right"}</button></td>
                     </tr>
                     <tr>
-                        <td><button onclick={self.link.callback(|_| Msg::NotifyBL)}>{"Notify Bottom Left"}</button></td>
-                        <td><button onclick={self.link.callback(|_| Msg::NotifyBR)}>{"Notify Bottom Right"}</button></td>
+                        <td><button onclick={link.callback(|_| Msg::NotifyBL)}>{"Notify Bottom Left"}</button></td>
+                        <td><button onclick={link.callback(|_| Msg::NotifyBR)}>{"Notify Bottom Right"}</button></td>
                     </tr>
                 </table>
 

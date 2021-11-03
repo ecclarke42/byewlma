@@ -1,9 +1,9 @@
-use yew::prelude::*;
+use yew_agent::{Dispatched, Dispatcher};
 
 use super::{NotificationAgent, NotificationAgentInput, NotificationProps};
 
 pub struct NotificationService {
-    dispatcher: yew::agent::Dispatcher<NotificationAgent>,
+    dispatcher: Dispatcher<NotificationAgent>,
 }
 
 impl Default for NotificationService {

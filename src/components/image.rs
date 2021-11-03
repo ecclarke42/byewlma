@@ -1,10 +1,7 @@
 use crate::innerlude::*;
 
-/// Bulma [Image](https://bulma.io/documentation/elements/image/) Element
-pub type Image = Pure<PureImage>;
-
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureImage {
+pub struct ImageProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -81,29 +78,29 @@ pub enum ImageSize {
     Ratio1x3,
 }
 
-impl PureComponent for PureImage {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("image");
+/// Bulma [Image](https://bulma.io/documentation/elements/image/) Element
+#[function_component(Image)]
+pub fn image(props: &ImageProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("image");
 
-            if let Some(size) = &self.size {
-                class.add(size);
-            }
-
-            if self.rounded {
-                class.unchecked_push("is-rounded");
-            }
-
-            if self.fullwidth {
-                class.unchecked_push("is-fullwidth")
-            }
+        if let Some(size) = &props.size {
+            class.add(size);
         }
 
-        html! {
-            <figure id={self.id.clone()} class={class} style={self.style.clone()}>
-                <img src={self.src.clone()} />
-            </figure>
+        if props.rounded {
+            class.unchecked_push("is-rounded");
         }
+
+        if props.fullwidth {
+            class.unchecked_push("is-fullwidth")
+        }
+    }
+
+    html! {
+        <figure id={props.id.clone()} class={class} style={props.style.clone()}>
+            <img src={props.src.clone()} />
+        </figure>
     }
 }

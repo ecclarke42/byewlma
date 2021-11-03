@@ -1,10 +1,7 @@
 use crate::{innerlude::*, SemanticColor, Size};
 
-/// Bulma [Progress](https://bulma.io/documentation/elements/block/) Element
-pub type Progress = Pure<PureProgress>;
-
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureProgress {
+pub struct ProgressProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -35,41 +32,41 @@ impl Default for ProgressState {
     }
 }
 
-impl PureComponent for PureProgress {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("progress");
-        }
+/// Bulma [Progress](https://bulma.io/documentation/elements/block/) Element
+#[function_component(Progress)]
+pub fn progress(props: &ProgressProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("progress");
+    }
 
-        if let Some(size) = &self.size {
-            class.add(size);
-        }
+    if let Some(size) = &props.size {
+        class.add(size);
+    }
 
-        if let Some(color) = &self.color {
-            class.add(color);
-        }
+    if let Some(color) = &props.color {
+        class.add(color);
+    }
 
-        match self.state {
-            ProgressState::Indeterminate => html! {
-                <progress
-                    id={self.id.clone()}
-                    class={class}
-                    style={self.style.clone()}
-                />
-            },
+    match props.state {
+        ProgressState::Indeterminate => html! {
+            <progress
+                id={props.id.clone()}
+                class={class}
+                style={props.style.clone()}
+            />
+        },
 
-            ProgressState::Value { value, max } => html! {
-                <progress
-                    id={self.id.clone()}
-                    class={class}
-                    style={self.style.clone()}
-                    value={value.to_string()}
-                    max={max.to_string()}
-                >
-                    // TODO: progress as formatted percent?
-                </progress>
-            },
-        }
+        ProgressState::Value { value, max } => html! {
+            <progress
+                id={props.id.clone()}
+                class={class}
+                style={props.style.clone()}
+                value={value.to_string()}
+                max={max.to_string()}
+            >
+                // TODO: progress as formatted percent?
+            </progress>
+        },
     }
 }

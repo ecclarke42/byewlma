@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use heck::SnakeCase;
 use quote::quote;
 use syn::{
     parse::{Parse, ParseStream},
@@ -18,7 +19,7 @@ pub fn transform_stream(
     let syn::DeriveInput {
         attrs: extra_attrs,
         vis,
-        ident: type_name,
+        ident: component_name,
         generics,
         data,
     } = parse_macro_input!(item as syn::DeriveInput);
@@ -30,18 +31,20 @@ pub fn transform_stream(
     .expect("input must be a struct")
     .fields;
 
-    let component_name = quote::format_ident!("Pure{}", type_name);
     let (html_attr_fields, html_attr_props): (Vec<_>, Vec<_>) = attributes
         .into_iter()
         .map(|attr| (attr.field(value_type.clone()), attr.prop()))
         .unzip();
 
+    let props_name = quote::format_ident!("{}Props", component_name);
+    let fn_name = syn::Ident::new(
+        &component_name.to_string().to_snake_case(),
+        component_name.span(),
+    );
     proc_macro::TokenStream::from(quote! {
-        #(#extra_attrs)*
-        #vis type #type_name = Pure<#component_name>;
 
         #[derive(Debug, Clone, PartialEq, Properties)]
-        #vis struct #component_name #generics {
+        #vis struct #props_name #generics {
             #[prop_or_default]
             pub id: Option<Cow<'static, str>>,
             #[prop_or_default]
@@ -88,7 +91,7 @@ pub fn transform_stream(
             #(#html_attr_fields)*
         }
 
-        impl #component_name {
+        impl #props_name {
             fn classes(&self) -> Classes {
                 let mut class = self.class.clone();
                 unsafe {
@@ -123,51 +126,48 @@ pub fn transform_stream(
 
                 class
             }
-
-            fn common(&self) -> (Option<Cow<'static, str>>, Option<Callback<InputData>>, Option<Callback<ChangeData>>) {
-                let value = self.value.as_ref().map(|v| v.to_input_value());
-                let on_input = self
-                    .on_input
-                    .as_ref()
-                    .map(|cb| cb.reform(|evt: InputData| #value_type::from_input_value(evt.value)));
-
-                let on_change = self.on_change.as_ref().map(|cb| {
-                    cb.reform(|evt: ChangeData| {
-                        if let ChangeData::Value(value) = evt {
-                            Some(#value_type::from_input_value(value))
-                        } else {
-                            None
-                        }
-                    })
-                });
-
-                (value, on_input, on_change)
-            }
         }
 
-        impl PureComponent for #component_name {
-            fn render(&self) -> Html {
-                let class = self.classes();
-                let (value, on_input, on_change) = self.common();
-                html! {
-                    <input
-                        type={#input_type}
+        #(#extra_attrs)*
+        #[function_component(#component_name)]
+        #vis fn #fn_name(props: &#props_name) -> Html {
+            let class = props.classes();
 
-                        id={self.id.clone()}
-                        class={class}
-                        style={self.style.clone()}
-                        tabindex={self.tab_index.map(|x| x.to_string())}
+            let value = props.value.as_ref().map(|x| x.to_input_value());
+            let on_input = props.on_input.as_ref()
+                    .map(|cb| cb.reform(|evt: InputEvent| #value_type::from_input_value(evt.target_unchecked_into::<web_sys::HtmlInputElement>().value())));
 
-                        name={self.name.clone()}
-                        value={value}
-                        oninput={on_input}
-                        onchange={on_change}
-                        disabled={self.is_disabled}
-                        readonly={self.is_readonly}
+            let on_change = props.on_change.as_ref().map(|cb| {
+                cb.reform(|evt: web_sys::Event| {
+                    let value = evt.target_unchecked_into::<web_sys::HtmlInputElement>()
+                        .value();
 
-                        #(#html_attr_props)*
-                    />
-                }
+                    if value.is_empty() {
+                        None
+                    } else {
+                        Some(#value_type::from_input_value(value))
+                    }
+                })
+            });
+
+            html! {
+                <input
+                    type={#input_type}
+
+                    id={props.id.clone()}
+                    class={class}
+                    style={props.style.clone()}
+                    tabindex={props.tab_index.map(|x| x.to_string())}
+
+                    name={props.name.clone()}
+                    value={value}
+                    oninput={on_input}
+                    onchange={on_change}
+                    disabled={props.is_disabled}
+                    readonly={props.is_readonly}
+
+                    #(#html_attr_props)*
+                />
             }
         }
 
@@ -219,7 +219,7 @@ pub enum HtmlInputAttrKind {
     Required,
     // Size (redundant to bulma)
     // Src (only image)
-    Step(syn::Type),
+    Step(Box<syn::Type>),
     /* Title ? (global tooltip)
      * Value (via common)
      * Width (only image) */
@@ -329,46 +329,46 @@ impl HtmlInputAttr {
         use HtmlInputAttrKind::*;
         match self.kind {
             Autocomplete => quote! {
-                autocomplete={self.autocomplete.map(|x| x.value())}
+                autocomplete={props.autocomplete.map(|x| x.value())}
             },
             Autofocus => quote! {
-                autofocus={self.autofocus.clone()}
+                autofocus={props.autofocus.clone()}
             },
             Form => quote! {
-                form={self.form_id.clone()}
+                form={props.form_id.clone()}
             },
             InputMode => quote! {
-                inputmode={self.input_mode_hint.map(|x| x.value())}
+                inputmode={props.input_mode_hint.map(|x| x.value())}
             },
             List => quote! {
-                list={self.datalist_id.clone()}
+                list={props.datalist_id.clone()}
             },
             Max => quote! {
-                max={self.max.map(|x| x.to_input_value())}
+                max={props.max.map(|x| x.to_input_value())}
             },
             MaxLength => quote! {
-                maxlength={self.max_length.map(|x| x.to_string())}
+                maxlength={props.max_length.map(|x| x.to_string())}
             },
             Min => quote! {
-                min={self.min.map(|x| x.to_input_value())}
+                min={props.min.map(|x| x.to_input_value())}
             },
             MinLength => quote! {
-                minlength={self.min_length.map(|x| x.to_string())}
+                minlength={props.min_length.map(|x| x.to_string())}
             },
             Multiple => quote! {
-                multiple={self.multiple}
+                multiple={props.multiple}
             },
             Pattern => quote! {
-                pattern={self.pattern.clone()}
+                pattern={props.pattern.clone()}
             },
             Placeholder => quote! {
-                placeholder={self.placeholder.clone()}
+                placeholder={props.placeholder.clone()}
             },
             Required => quote! {
-                required={self.required}
+                required={props.required}
             },
             Step(_) => quote! {
-                step={self.step.map(|s| s.value())}
+                step={props.step.map(|s| s.value())}
             },
         }
     }
@@ -391,7 +391,9 @@ impl FromStr for HtmlInputAttrKind {
             "pattern" => Ok(HtmlInputAttrKind::Pattern),
             "placeholder" => Ok(HtmlInputAttrKind::Placeholder),
             "required" => Ok(HtmlInputAttrKind::Required),
-            "step" => Ok(HtmlInputAttrKind::Step(syn::Type::Verbatim(quote! { u32 }))),
+            "step" => Ok(HtmlInputAttrKind::Step(Box::new(syn::Type::Verbatim(
+                quote! { u32 },
+            )))),
             other => Err(other.to_string()),
         }
     }
@@ -479,7 +481,7 @@ impl Parse for HtmlInputAttr {
                 let inner;
                 syn::parenthesized!(inner in input);
                 if let Ok(ty) = inner.parse::<syn::Type>() {
-                    *default = ty;
+                    *default = Box::new(ty);
                 }
             }
         }

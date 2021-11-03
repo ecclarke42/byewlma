@@ -14,7 +14,7 @@ pub enum Filtered {
 
 /// Internal state is wrapped in an Arc, so cloning this is not very expensive
 pub struct SelectState<T> {
-    pub(super) options: Arc<[T]>,
+    pub options: Arc<[T]>,
     pub(super) selected_indices: Arc<RwLock<Selection>>,
     pub(super) filtered_indices: Arc<RwLock<Filtered>>,
 

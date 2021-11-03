@@ -1,91 +1,99 @@
 use crate::{innerlude::*, Color};
 
-pure_props! {
-    /// Bulma Typography Helper
-    ///
-    /// Renders as a <span/>, by default, but can be overidden by the `tag` property
-    pub struct Text {
-        #[prop_or_default]
-        pub tag: Option<&'static str>,
+#[derive(Debug, Default, PartialEq, Properties)]
+pub struct TextProps {
+    #[prop_or_default]
+    pub id: Option<Cow<'static, str>>,
 
-        #[prop_or_default]
-        pub color: Option<Color>,
+    #[prop_or_default]
+    pub class: Classes,
 
-        #[prop_or_default]
-        pub size: Option<TextSize>,
-        /// Set size when viewport is less than the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
-        #[prop_or_default]
-        pub size_mobile: Option<TextSize>,
-        /// Set size when viewport is less than the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1023px`)
-        #[prop_or_default]
-        pub size_touch: Option<TextSize>,
-        /// Set size when viewport is at least the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
-        #[prop_or_default]
-        pub size_tablet_and_greater: Option<TextSize>,
-        /// Set size when viewport is at least the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1024px`)
-        #[prop_or_default]
-        pub size_desktop_and_greater: Option<TextSize>,
-        /// Set size when viewport is at least the [`$widescreen`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1216px`)
-        #[prop_or_default]
-        pub size_widescreen_and_greater: Option<TextSize>,
-        /// Set size when viewport is at least the [`$fullhd`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1408px`)
-        #[prop_or_default]
-        pub size_fullhd_and_greater: Option<TextSize>,
+    #[prop_or_default]
+    pub style: Option<Cow<'static, str>>,
 
-        #[prop_or_default]
-        pub alignment: Option<TextAlignment>,
-        /// Set alignment when viewport is less than the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
-        #[prop_or_default]
-        pub alignment_mobile: Option<TextAlignment>,
-        /// Set alignment when viewport is less than the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1023px`)
-        #[prop_or_default]
-        pub alignment_touch: Option<TextAlignment>,
-        /// Set alignment when viewport is at least the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
-        #[prop_or_default]
-        pub alignment_tablet_and_greater: Option<TextAlignment>,
-        /// Set alignment when viewport is at least the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1024px`)
-        #[prop_or_default]
-        pub alignment_desktop_and_greater: Option<TextAlignment>,
-        /// Set alignment when viewport is at least the [`$widescreen`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1216px`)
-        #[prop_or_default]
-        pub alignment_widescreen_and_greater: Option<TextAlignment>,
-        /// Set alignment when viewport is at least the [`$fullhd`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1408px`)
-        #[prop_or_default]
-        pub alignment_fullhd_and_greater: Option<TextAlignment>,
+    #[prop_or_default]
+    pub children: Children,
 
-        /// Set alignment when viewport is in the tablet range, between the
-        /// [`$tablet`](https://bulma.io/documentation/customize/variables/) (default: `769px`)
-        /// and
-        /// [`$desktop`](https://bulma.io/documentation/customize/variables/) (default: `1023px`)
-        /// breakpoints
-        #[prop_or_default]
-        pub alignment_only_tablet: Option<TextAlignment>,
+    #[prop_or_default]
+    pub tag: Option<&'static str>,
 
-        /// Set alignment when viewport is in the tablet range, between the
-        /// [`$desktop`](https://bulma.io/documentation/customize/variables/) (default: `1023px`)
-        /// and
-        /// [`$widescreen`](https://bulma.io/documentation/customize/variables/) (default: `1216px`)
-        /// breakpoints
-        #[prop_or_default]
-        pub alignment_only_desktop: Option<TextAlignment>,
+    #[prop_or_default]
+    pub color: Option<Color>,
 
-        /// Set alignment when viewport is in the tablet range, between the
-        /// [`$widescreen`](https://bulma.io/documentation/customize/variables/) (default: `1216px`)
-        /// and
-        /// [`$fullhd`](https://bulma.io/documentation/customize/variables/) (default: `1408px`)
-        /// breakpoints
-        #[prop_or_default]
-        pub alignment_only_widescreen: Option<TextAlignment>,
+    #[prop_or_default]
+    pub size: Option<TextSize>,
+    /// Set size when viewport is less than the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
+    #[prop_or_default]
+    pub size_mobile: Option<TextSize>,
+    /// Set size when viewport is less than the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1023px`)
+    #[prop_or_default]
+    pub size_touch: Option<TextSize>,
+    /// Set size when viewport is at least the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
+    #[prop_or_default]
+    pub size_tablet_and_greater: Option<TextSize>,
+    /// Set size when viewport is at least the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1024px`)
+    #[prop_or_default]
+    pub size_desktop_and_greater: Option<TextSize>,
+    /// Set size when viewport is at least the [`$widescreen`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1216px`)
+    #[prop_or_default]
+    pub size_widescreen_and_greater: Option<TextSize>,
+    /// Set size when viewport is at least the [`$fullhd`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1408px`)
+    #[prop_or_default]
+    pub size_fullhd_and_greater: Option<TextSize>,
 
-        #[prop_or_default]
-        pub transform: Option<TextTransform>,
+    #[prop_or_default]
+    pub alignment: Option<TextAlignment>,
+    /// Set alignment when viewport is less than the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
+    #[prop_or_default]
+    pub alignment_mobile: Option<TextAlignment>,
+    /// Set alignment when viewport is less than the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1023px`)
+    #[prop_or_default]
+    pub alignment_touch: Option<TextAlignment>,
+    /// Set alignment when viewport is at least the [`$tablet`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `769px`)
+    #[prop_or_default]
+    pub alignment_tablet_and_greater: Option<TextAlignment>,
+    /// Set alignment when viewport is at least the [`$desktop`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1024px`)
+    #[prop_or_default]
+    pub alignment_desktop_and_greater: Option<TextAlignment>,
+    /// Set alignment when viewport is at least the [`$widescreen`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1216px`)
+    #[prop_or_default]
+    pub alignment_widescreen_and_greater: Option<TextAlignment>,
+    /// Set alignment when viewport is at least the [`$fullhd`](https://bulma.io/documentation/customize/variables/) breakpoint (default: `1408px`)
+    #[prop_or_default]
+    pub alignment_fullhd_and_greater: Option<TextAlignment>,
 
-        #[prop_or_default]
-        pub weight: Option<TextWeight>,
+    /// Set alignment when viewport is in the tablet range, between the
+    /// [`$tablet`](https://bulma.io/documentation/customize/variables/) (default: `769px`)
+    /// and
+    /// [`$desktop`](https://bulma.io/documentation/customize/variables/) (default: `1023px`)
+    /// breakpoints
+    #[prop_or_default]
+    pub alignment_only_tablet: Option<TextAlignment>,
 
-        #[prop_or_default]
-        pub font_family: Option<FontFamily>,
-    }
+    /// Set alignment when viewport is in the tablet range, between the
+    /// [`$desktop`](https://bulma.io/documentation/customize/variables/) (default: `1023px`)
+    /// and
+    /// [`$widescreen`](https://bulma.io/documentation/customize/variables/) (default: `1216px`)
+    /// breakpoints
+    #[prop_or_default]
+    pub alignment_only_desktop: Option<TextAlignment>,
+
+    /// Set alignment when viewport is in the tablet range, between the
+    /// [`$widescreen`](https://bulma.io/documentation/customize/variables/) (default: `1216px`)
+    /// and
+    /// [`$fullhd`](https://bulma.io/documentation/customize/variables/) (default: `1408px`)
+    /// breakpoints
+    #[prop_or_default]
+    pub alignment_only_widescreen: Option<TextAlignment>,
+
+    #[prop_or_default]
+    pub transform: Option<TextTransform>,
+
+    #[prop_or_default]
+    pub weight: Option<TextWeight>,
+
+    #[prop_or_default]
+    pub font_family: Option<FontFamily>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, BulmaClass)]
@@ -317,89 +325,91 @@ pub enum FontFamily {
     Code,
 }
 
-impl PureComponent for PureText {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
+/// Bulma Typography Helper
+///
+/// Renders as a <span/>, by default, but can be overidden by the `tag` property
+#[function_component(Text)]
+pub fn text(props: &TextProps) -> Html {
+    let mut class = props.class.clone();
 
-        if let Some(color) = &self.color {
-            class.push(color.text_class());
-        }
+    if let Some(color) = &props.color {
+        class.push(color.text_class());
+    }
 
-        if let Some(size) = &self.size {
-            class.add(size);
-        }
+    if let Some(size) = &props.size {
+        class.add(size);
+    }
 
-        unsafe {
-            if let Some(size) = &self.size_mobile {
-                class.unchecked_push(size.mobile());
-            }
-            if let Some(size) = &self.size_touch {
-                class.unchecked_push(size.touch());
-            }
-            if let Some(size) = &self.size_tablet_and_greater {
-                class.unchecked_push(size.tablet());
-            }
-            if let Some(size) = &self.size_desktop_and_greater {
-                class.unchecked_push(size.desktop());
-            }
-            if let Some(size) = &self.size_widescreen_and_greater {
-                class.unchecked_push(size.widescreen());
-            }
-            if let Some(size) = &self.size_fullhd_and_greater {
-                class.unchecked_push(size.fullhd());
-            }
+    unsafe {
+        if let Some(size) = &props.size_mobile {
+            class.unchecked_push(size.mobile());
         }
+        if let Some(size) = &props.size_touch {
+            class.unchecked_push(size.touch());
+        }
+        if let Some(size) = &props.size_tablet_and_greater {
+            class.unchecked_push(size.tablet());
+        }
+        if let Some(size) = &props.size_desktop_and_greater {
+            class.unchecked_push(size.desktop());
+        }
+        if let Some(size) = &props.size_widescreen_and_greater {
+            class.unchecked_push(size.widescreen());
+        }
+        if let Some(size) = &props.size_fullhd_and_greater {
+            class.unchecked_push(size.fullhd());
+        }
+    }
 
-        if let Some(alignment) = &self.alignment {
-            class.add(alignment);
-        }
+    if let Some(alignment) = &props.alignment {
+        class.add(alignment);
+    }
 
-        unsafe {
-            if let Some(alignment) = &self.alignment_mobile {
-                class.unchecked_push(alignment.mobile());
-            }
-            if let Some(alignment) = &self.alignment_touch {
-                class.unchecked_push(alignment.touch());
-            }
-            if let Some(alignment) = &self.alignment_only_tablet {
-                class.unchecked_push(alignment.tablet_only());
-            }
-            if let Some(alignment) = &self.alignment_tablet_and_greater {
-                class.unchecked_push(alignment.tablet());
-            }
-            if let Some(alignment) = &self.alignment_only_desktop {
-                class.unchecked_push(alignment.desktop_only());
-            }
-            if let Some(alignment) = &self.alignment_desktop_and_greater {
-                class.unchecked_push(alignment.desktop());
-            }
-            if let Some(alignment) = &self.alignment_only_widescreen {
-                class.unchecked_push(alignment.widescreen_only());
-            }
-            if let Some(alignment) = &self.alignment_widescreen_and_greater {
-                class.unchecked_push(alignment.widescreen());
-            }
-            if let Some(alignment) = &self.alignment_fullhd_and_greater {
-                class.unchecked_push(alignment.fullhd());
-            }
+    unsafe {
+        if let Some(alignment) = &props.alignment_mobile {
+            class.unchecked_push(alignment.mobile());
         }
+        if let Some(alignment) = &props.alignment_touch {
+            class.unchecked_push(alignment.touch());
+        }
+        if let Some(alignment) = &props.alignment_only_tablet {
+            class.unchecked_push(alignment.tablet_only());
+        }
+        if let Some(alignment) = &props.alignment_tablet_and_greater {
+            class.unchecked_push(alignment.tablet());
+        }
+        if let Some(alignment) = &props.alignment_only_desktop {
+            class.unchecked_push(alignment.desktop_only());
+        }
+        if let Some(alignment) = &props.alignment_desktop_and_greater {
+            class.unchecked_push(alignment.desktop());
+        }
+        if let Some(alignment) = &props.alignment_only_widescreen {
+            class.unchecked_push(alignment.widescreen_only());
+        }
+        if let Some(alignment) = &props.alignment_widescreen_and_greater {
+            class.unchecked_push(alignment.widescreen());
+        }
+        if let Some(alignment) = &props.alignment_fullhd_and_greater {
+            class.unchecked_push(alignment.fullhd());
+        }
+    }
 
-        if let Some(transform) = &self.transform {
-            class.add(transform);
-        }
+    if let Some(transform) = &props.transform {
+        class.add(transform);
+    }
 
-        if let Some(weight) = &self.weight {
-            class.add(weight);
-        }
+    if let Some(weight) = &props.weight {
+        class.add(weight);
+    }
 
-        if let Some(family) = &self.font_family {
-            class.add(family);
-        }
+    if let Some(family) = &props.font_family {
+        class.add(family);
+    }
 
-        html! {
-            <@{self.tag.unwrap_or("span")} id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </@>
-        }
+    html! {
+        <@{props.tag.unwrap_or("span")} id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </@>
     }
 }

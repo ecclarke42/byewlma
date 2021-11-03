@@ -1,9 +1,6 @@
-use yew::{
-    prelude::*,
-    services::timeout::{TimeoutService, TimeoutTask},
-};
-
 use super::properties::{Color, Position, Size};
+use gloo::timers::callback::Timeout;
+use yew::prelude::*;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct NotificationProps {
@@ -42,9 +39,7 @@ pub struct Notification {
     closed: bool,
     timed_out: bool,
 
-    props: NotificationProps,
-    link: ComponentLink<Self>,
-    _timeout: Option<TimeoutTask>,
+    timeout: Option<Timeout>,
 }
 
 pub enum Msg {
@@ -60,32 +55,33 @@ impl Component for Notification {
     type Message = Msg;
     type Properties = NotificationProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let _timeout = props
-            .timeout
-            .map(|d| TimeoutService::spawn(d, link.callback(|_| Msg::TimedOut)));
+    fn create(ctx: &Context<Self>) -> Self {
+        let timeout = {
+            let link = ctx.link().clone();
+            ctx.props().timeout.map(move |duration| {
+                Timeout::new(duration.as_millis() as u32, move || {
+                    link.send_message(Msg::TimedOut)
+                })
+            })
+        };
+
         Self {
             closed: false,
             timed_out: false,
-            props,
-            _timeout,
-            link,
+            timeout,
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Rendered => false,
             Msg::TimedOut => {
                 self.timed_out = true;
+                self.timeout = None;
                 true
             }
             Msg::TimeoutAnimated => {
-                if let Some(ref on_timeout) = self.props.on_timeout {
+                if let Some(ref on_timeout) = ctx.props().on_timeout {
                     on_timeout.emit(())
                 }
                 false
@@ -95,7 +91,7 @@ impl Component for Notification {
                 true
             }
             Msg::CloseAnimated => {
-                if let Some(ref on_closed) = self.props.on_closed {
+                if let Some(ref on_closed) = ctx.props().on_closed {
                     on_closed.emit(())
                 }
                 false
@@ -104,7 +100,10 @@ impl Component for Notification {
         }
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let props = ctx.props();
+        let link = ctx.link();
+
         // TODO: better way of putting this in the html?
         // TODO: margin property?
         // let style = if self.props.standalone {
@@ -116,25 +115,34 @@ impl Component for Notification {
         // Figure out which classes to render
         let mut msg_cls = Classes::from("message byewlma-msg-svc-body");
         let mut del_cls = Classes::from("delete");
-        if let Some(cls) = self.props.color.class() {
+        if let Some(cls) = props.color.class() {
             msg_cls.push(cls);
         }
-        if let Some(cls) = self.props.size.class() {
+        if let Some(cls) = props.size.class() {
             msg_cls.push(cls);
             del_cls.push(cls);
         }
-        if self.props.standalone {
-            msg_cls.push(self.props.position.style());
+        if props.standalone {
+            msg_cls.push(props.position.style());
         }
 
         // Animation class
-        let animation_callback = self.add_animation_classes(&mut msg_cls);
+        let animation_callback = if self.closed {
+            msg_cls.push(props.position.animate_out_style());
+            link.callback(|_| Msg::CloseAnimated)
+        } else if self.timed_out {
+            msg_cls.push(props.position.animate_out_style());
+            link.callback(|_| Msg::TimeoutAnimated)
+        } else {
+            msg_cls.push(props.position.animate_in_style());
+            link.callback(|_| Msg::DisplayAnimated)
+        };
 
         // Show the header if there is a header string, or if "can-close" is true
-        let header = if self.props.header.is_some() || self.props.can_close {
-            let header = self.props.header.clone().unwrap_or_default();
-            let button = if self.props.can_close {
-                html! {<button class={del_cls} aria-label="delete" onclick={self.link.callback(|_| Msg::Closed)}></button>}
+        let header = if props.header.is_some() || props.can_close {
+            let header = props.header.clone().unwrap_or_default();
+            let button = if props.can_close {
+                html! {<button class={del_cls} aria-label="delete" onclick={ctx.link().callback(|_| Msg::Closed)}></button>}
             } else {
                 html! {}
             };
@@ -152,27 +160,9 @@ impl Component for Notification {
             <article class={msg_cls} onanimationend={animation_callback}>
                 {header}
                 <div class="message-body">
-                    {self.props.children.clone()}
+                    {props.children.clone()}
                 </div>
             </article>
-        }
-    }
-}
-
-impl Notification {
-    fn add_animation_classes(
-        &self,
-        classes: &mut Classes,
-    ) -> Callback<yew::web_sys::AnimationEvent> {
-        if self.closed {
-            classes.push(self.props.position.animate_out_style());
-            self.link.callback(|_| Msg::CloseAnimated)
-        } else if self.timed_out {
-            classes.push(self.props.position.animate_out_style());
-            self.link.callback(|_| Msg::TimeoutAnimated)
-        } else {
-            classes.push(self.props.position.animate_in_style());
-            self.link.callback(|_| Msg::DisplayAnimated)
         }
     }
 }

@@ -1,5 +1,4 @@
 use yew::prelude::*;
-use yewtil::future::LinkFuture;
 
 mod state;
 pub use state::SelectState;
@@ -11,12 +10,11 @@ pub use wrappers::{SelectDisplay, SelectFilter};
 /// Bulma-based selection box
 /// TODO: document
 pub struct Select<T: 'static> {
-    link: ComponentLink<Self>,
-    props: SelectProps<T>,
-
     focused: bool,
     selection_index: usize,
     search_text: String,
+
+    _ty: std::marker::PhantomData<T>,
 }
 
 #[derive(Properties)]
@@ -106,46 +104,42 @@ impl<T: 'static> Component for Select<T> {
     type Properties = SelectProps<T>;
     type Message = Msg;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            link,
             focused: false,
             selection_index: 0,
             search_text: String::new(),
-            props,
+
+            _ty: Default::default(),
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            if props.disabled {
-                self.focused = false;
-                self.selection_index = 0;
-                self.search_text.clear();
-            }
-            self.props = props;
-            true
-        } else {
-            false
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if ctx.props().disabled {
+            self.focused = false;
+            self.selection_index = 0;
+            self.search_text.clear();
         }
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Noop => false,
 
             Msg::Filtered => true,
 
             Msg::Input(input) => {
-                if self.props.disabled || self.props.readonly {
+                let props = ctx.props();
+                if props.disabled || props.readonly {
                     return false;
                 }
 
                 self.focused = true;
                 self.search_text = input.clone();
 
-                let state = self.props.state.clone();
-                self.link.send_future(async move {
+                let state = props.state.clone();
+                ctx.link().send_future(async move {
                     if input.is_empty() {
                         state.unfilter().await;
                     } else {
@@ -157,8 +151,8 @@ impl<T: 'static> Component for Select<T> {
             }
 
             Msg::ClearSearch => {
-                let options = self.props.state.clone();
-                self.link.send_future(async move {
+                let options = ctx.props().state.clone();
+                ctx.link().send_future(async move {
                     options.unfilter().await;
                     Msg::Filtered
                 });
@@ -167,16 +161,16 @@ impl<T: 'static> Component for Select<T> {
             }
 
             Msg::Selected(idx) => {
-                if let Some(ref onselected) = self.props.onselected {
+                if let Some(ref onselected) = ctx.props().onselected {
                     onselected.emit(idx);
                 }
-                self.link
+                ctx.link()
                     .send_message_batch(vec![Msg::ClearSearch, Msg::Blur]);
                 false
             }
 
             Msg::Removed(idx) => {
-                if let Some(ref onremoved) = self.props.onremoved {
+                if let Some(ref onremoved) = ctx.props().onremoved {
                     onremoved.emit(idx);
                 }
                 false
@@ -188,7 +182,7 @@ impl<T: 'static> Component for Select<T> {
             }
 
             Msg::Focus => {
-                if self.props.disabled || self.props.readonly {
+                if ctx.props().disabled || ctx.props().readonly {
                     return false;
                 }
                 self.focused = true;
@@ -203,15 +197,14 @@ impl<T: 'static> Component for Select<T> {
             }
 
             Msg::KeyPress(event) => {
-                if self.props.disabled || self.props.readonly {
+                let props = ctx.props();
+                if props.disabled || props.readonly {
                     return false;
                 }
                 match event.code().as_ref() {
                     "Enter" => {
-                        if let Some((index, _)) =
-                            self.props.state.get_filtered(self.selection_index)
-                        {
-                            self.link.send_message(Msg::Selected(index));
+                        if let Some((index, _)) = props.state.get_filtered(self.selection_index) {
+                            ctx.link().send_message(Msg::Selected(index));
                         }
                         false
                     }
@@ -245,16 +238,18 @@ impl<T: 'static> Component for Select<T> {
         }
     }
 
-    fn view(&self) -> Html {
-        let options = if self.props.omit_selected {
-            self.props
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let props = ctx.props();
+        let link = ctx.link();
+        let options = if props.omit_selected {
+            props
                 .state
                 .filtered_items()
                 .into_iter()
                 .filter(|(_, selected, _)| !selected)
                 .collect::<Vec<_>>()
         } else {
-            self.props.state.filtered_items()
+            props.state.filtered_items()
         };
 
         let options = if options.is_empty() {
@@ -275,22 +270,22 @@ impl<T: 'static> Component for Select<T> {
                 .map(|(i, (idx, selected, item))| {
                     html! {
                         <a
-                            class=classes!(
+                            class={classes!(
                                 "dropdown-item",
                                 if self.selection_index == i {"is-active"}
                                 else if selected {"has-background-primary-light"}
                                 else {""}
-                            )
+                            )}
                         >
                             <p
-                                onmouseenter=self.link.callback(move |_| Msg::Hover(i))
-                                onmousedown=self.link.callback(move |event: MouseEvent| {
+                                onmouseenter={link.callback(move |_| Msg::Hover(i))}
+                                onmousedown={link.callback(move |event: MouseEvent| {
                                     let event: &Event = &event;
                                     event.prevent_default();
                                     Msg::Selected(idx)
-                                })
+                                })}
                             >
-                                { self.props.display.call(&item) }
+                                { props.display.call(item) }
                             </p>
                         </a>
                     }
@@ -299,13 +294,13 @@ impl<T: 'static> Component for Select<T> {
         };
 
         html! {
-            <div class=classes!("dropdown", if self.focused {"is-active"} else {""})>
+            <div class={classes!("dropdown", if self.focused {"is-active"} else {""})}>
                 <div class="dropdown-trigger">
                 {
-                    if self.props.state.is_multiple() {
-                        self.view_multiple()
+                    if props.state.is_multiple() {
+                        self.view_multiple(ctx)
                     } else {
-                        self.view_single()
+                        self.view_single(ctx)
                     }
                 }
                 </div>
@@ -320,28 +315,30 @@ impl<T: 'static> Component for Select<T> {
 }
 
 impl<T> Select<T> {
-    fn view_single(&self) -> Html {
+    fn view_single(&self, ctx: &Context<Self>) -> Html {
+        let props = ctx.props();
+        let link = ctx.link();
         if self.focused {
             html! {
                 <div class="control has-icons-right">
                     <input
-                        class=classes!("input", if self.props.loading {"is-loading"} else {""})
+                        class={classes!("input", if props.loading {"is-loading"} else {""})}
                         type="text"
-                        value=self.search_text.clone()
-                        placeholder=self.props.state.selected_items().first().map(|(_, x)| self.props.display.call(x)).unwrap_or_else(|| self.props.placeholder.clone())
-                        oninput=self.link.callback(|event: InputData| Msg::Input(event.value))
-                        onfocus=self.link.callback(|_| Msg::Focus)
-                        onblur=self.link.callback(|_| Msg::Blur)
-                        onkeydown=self.link.callback(Msg::KeyPress)
-                        disabled=self.props.disabled
-                        readonly=self.props.readonly
+                        value={self.search_text.clone()}
+                        placeholder={props.state.selected_items().first().map(|(_, x)| props.display.call(x)).unwrap_or_else(|| props.placeholder.clone())}
+                        oninput={link.callback(|evt: InputEvent| Msg::Input(evt.target_unchecked_into::<web_sys::HtmlInputElement>().value()))}
+                        onfocus={link.callback(|_| Msg::Focus)}
+                        onblur={link.callback(|_| Msg::Blur)}
+                        onkeydown={link.callback(Msg::KeyPress)}
+                        disabled={props.disabled}
+                        readonly={props.readonly}
                     />
                     <span class="icon is-small is-right">
                     {
                         if self.search_text.is_empty() {
                             html! { <i class="fas fa-search" /> }
                         } else {
-                            html! {<button class="delete" onclick=self.link.callback(|_| Msg::ClearSearch) /> }
+                            html! {<button class="delete" onclick={link.callback(|_| Msg::ClearSearch)} /> }
                         }
                     }
                     </span>
@@ -351,21 +348,20 @@ impl<T> Select<T> {
             html! {
                 <div class="control has-icons-right">
                     <input
-                        class=classes!("input", if self.props.loading {"is-loading"} else {""})
+                        class={classes!("input", if props.loading {"is-loading"} else {""})}
                         type="text"
-                        value=self.props.state.selected_items().first().map(|(_, x)| self.props.display.call(x)).unwrap_or_default()
-                        oninput=self.link.callback(|data: InputData| {
+                        value={props.state.selected_items().first().map(|(_, x)| props.display.call(x)).unwrap_or_default()}
+                        oninput={link.callback(|evt: InputEvent| {
                             // Don't allow input when not focused
-                            let event: &Event = &data.event;
-                            event.prevent_default();
+                            evt.prevent_default(); // TODO: this may not work
                             Msg::Focus
-                        })
-                        onfocus=self.link.callback(|_| Msg::Focus)
-                        onblur=self.link.callback(|_| Msg::Blur)
-                        onclick=self.link.callback(|_| Msg::Focus)
-                        onkeydown=self.link.callback(Msg::KeyPress)
-                        disabled=self.props.disabled
-                        readonly=self.props.readonly
+                        })}
+                        onfocus={link.callback(|_| Msg::Focus)}
+                        onblur={link.callback(|_| Msg::Blur)}
+                        onclick={link.callback(|_| Msg::Focus)}
+                        onkeydown={link.callback(Msg::KeyPress)}
+                        disabled={props.disabled}
+                        readonly={props.readonly}
                     />
                     <span class="icon is-small is-right">
                         <i class="fas fa-angle-down" />
@@ -375,15 +371,17 @@ impl<T> Select<T> {
         }
     }
 
-    fn view_multiple(&self) -> Html {
+    fn view_multiple(&self, ctx: &Context<Self>) -> Html {
+        let props = ctx.props();
+        let link = ctx.link();
         html! {
-            <div class=classes!("input", "byewlma-search-select-multiple-input-wrapper", if self.focused {"is-active"} else {""})>
+            <div class={classes!("input", "byewlma-search-select-multiple-input-wrapper", if self.focused {"is-active"} else {""})}>
                 {
-                    if self.props.display_selected {
-                        self.props.state.selected_items().into_iter().map(|(i, item)| html! {
+                    if props.display_selected {
+                        props.state.selected_items().into_iter().map(|(i, item)| html! {
                             <span class="tag">
-                                { self.props.display.call(&item) }
-                                <div class="delete is-small" onclick=self.link.callback(move |_| Msg::Removed(i)) />
+                                { props.display.call(item) }
+                                <div class="delete is-small" onclick={link.callback(move |_| Msg::Removed(i))} />
                             </span>
                         }).collect::<Html>()
                     } else {
@@ -391,16 +389,16 @@ impl<T> Select<T> {
                     }
                 }
                 <input
-                    class=classes!("input", if self.props.loading {"is-loading"} else {""})
+                    class={classes!("input", if props.loading {"is-loading"} else {""})}
                     type="text"
                     placeholder="Type to search"
-                    value=self.search_text.clone()
-                    oninput=self.link.callback(|event: InputData| Msg::Input(event.value))
-                    onfocus=self.link.callback(|_| Msg::Focus)
-                    onblur=self.link.callback(|_| Msg::Blur)
-                    onkeydown=self.link.callback(Msg::KeyPress)
-                    disabled=self.props.disabled
-                    readonly=self.props.readonly
+                    value={self.search_text.clone()}
+                    oninput={link.callback(|evt: InputEvent| Msg::Input(evt.target_unchecked_into::<web_sys::HtmlInputElement>().value()))}
+                    onfocus={link.callback(|_| Msg::Focus)}
+                    onblur={link.callback(|_| Msg::Blur)}
+                    onkeydown={link.callback(Msg::KeyPress)}
+                    disabled={props.disabled}
+                    readonly={props.readonly}
                 />
             </div>
         }

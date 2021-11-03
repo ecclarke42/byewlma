@@ -11,7 +11,9 @@ publish = false
 byewlma = { path = "../.." }
 lazy_static = "*"
 wasm-bindgen = "*"
-yew = "0.18"
-yewtil = "0.4"
-yew-router = "0.15"
+web-sys = "*"
+
+yew = { git = "https://github.com/yewstack/yew" }
+yew-router = { git = "https://github.com/yewstack/yew" }
+
 syntect = { version = "*", default-features = false, features = ["default-fancy"] }

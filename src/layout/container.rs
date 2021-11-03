@@ -1,10 +1,7 @@
 use crate::innerlude::*;
 
-/// Bulma [Container](https://bulma.io/documentation/layout/container/) Layout Element
-pub type Container = Pure<PureContainer>;
-
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
-pub struct PureContainer {
+pub struct ContainerProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -48,21 +45,21 @@ pub enum ContainerWidth {
     Fluid,
 }
 
-impl PureComponent for PureContainer {
-    fn render(&self) -> Html {
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("container");
-        }
+/// Bulma [Container](https://bulma.io/documentation/layout/container/) Layout Element
+#[function_component(Container)]
+pub fn container(props: &ContainerProps) -> Html {
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("container");
+    }
 
-        if let Some(width) = &self.width {
-            class.add(width);
-        }
+    if let Some(width) = &props.width {
+        class.add(width);
+    }
 
-        html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {for self.children.iter()}
-            </div>
-        }
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {for props.children.iter()}
+        </div>
     }
 }

@@ -3,6 +3,7 @@ use crate::{innerlude::*, Size};
 pub mod checkbox;
 pub mod control;
 pub mod field;
+pub mod file;
 pub mod input;
 pub mod radio;
 pub mod textarea;
@@ -20,7 +21,7 @@ pub use input::{
 };
 pub use radio::RadioButton;
 pub use textarea::TextArea;
-use yew::{html::IntoPropValue, virtual_dom::VNode};
+use yew::virtual_dom::VNode;
 
 // pub type HorizontalForm = Pure<PureHorizontalForm>;
 
@@ -45,10 +46,8 @@ use yew::{html::IntoPropValue, virtual_dom::VNode};
 //     }
 // }
 
-pub type FormRow = Pure<PureFormRow>;
-
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
-pub struct PureFormRow {
+pub struct FormRowProps {
     #[prop_or_default]
     pub id: Option<Cow<'static, str>>,
 
@@ -70,36 +69,35 @@ pub struct PureFormRow {
     pub label_size: Option<Size>,
 }
 
-impl PureComponent for PureFormRow {
-    fn render(&self) -> Html {
-        let label = if let Some(label) = &self.label {
-            let mut label_class = classes!("field-label");
-            if let Some(size) = self.label_size {
-                unsafe { label_class.unchecked_push(size.class()) }
-            }
-            html! {
-                <div class={label_class}>
-                    <label class="label">{label.clone()}</label>
-                </div>
-            }
-        } else {
-            html! {}
-        };
-
-        let mut class = self.class.clone();
-        unsafe {
-            class.unchecked_push("field");
-            class.unchecked_push("is-horizontal");
+#[function_component(FormRow)]
+pub fn form_row(props: &FormRowProps) -> Html {
+    let label = if let Some(label) = &props.label {
+        let mut label_class = classes!("field-label");
+        if let Some(size) = props.label_size {
+            unsafe { label_class.unchecked_push(size.class()) }
         }
-
         html! {
-            <div id={self.id.clone()} class={class} style={self.style.clone()}>
-                {label}
-                <div class="field-body">
-                    { for self.children.clone() }
-                </div>
+            <div class={label_class}>
+                <label class="label">{label.clone()}</label>
             </div>
         }
+    } else {
+        html! {}
+    };
+
+    let mut class = props.class.clone();
+    unsafe {
+        class.unchecked_push("field");
+        class.unchecked_push("is-horizontal");
+    }
+
+    html! {
+        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+            {label}
+            <div class="field-body">
+                { for props.children.clone() }
+            </div>
+        </div>
     }
 }
 
@@ -149,9 +147,9 @@ impl From<VNode> for FormLabel {
     }
 }
 
-impl Into<Html> for FormLabel {
-    fn into(self) -> Html {
-        match self {
+impl From<FormLabel> for Html {
+    fn from(label: FormLabel) -> Self {
+        match label {
             FormLabel::Text(text) => text.into(),
             FormLabel::Node(node) => node,
         }
