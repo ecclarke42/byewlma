@@ -6,14 +6,13 @@ use crate::{helpers::Color, innerlude::*, Size};
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct IconProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
-    // TODO: implement
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     /// Either an IconKind or a tuple (IconKind, IconKind) to indicate stacked
     /// icons
@@ -158,6 +157,11 @@ pub enum IconPull {
 
 #[function_component(Icon)]
 pub fn icon(props: &IconProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
+    let onclick = props.on_click.clone();
+
     // TODO
     // match (self.props.rotate, self.props.flip) {
     //     (Some(rotate), Some(flip)) => {}
@@ -185,6 +189,11 @@ pub fn icon(props: &IconProps) -> Html {
 
     let mut i_class = classes!("fas");
 
+    let icon_class: &'static str = props.kind.into();
+    unsafe {
+        i_class.unchecked_push(icon_class);
+    }
+
     if let Some(animate) = &props.animate {
         match animate {
             IconAnimation::Spin => unsafe { i_class.unchecked_push("fa-spin") },
@@ -197,37 +206,40 @@ pub fn icon(props: &IconProps) -> Html {
             unsafe { span_class.unchecked_push(size.class()) }
         }
     }
-    if let Some(size) = props.icon_size.or(props
-        .size
-        .as_ref()
-        .map(|s| match s {
-            Size::Small | Size::Normal => None,
-            Size::Medium => Some(IconSize::Large),
-            Size::Large => Some(IconSize::X2),
-        })
-        .flatten())
-    {
+    if let Some(size) = props.icon_size.or_else(|| {
+        props
+            .size
+            .as_ref()
+            .map(|s| match s {
+                Size::Small | Size::Normal => None,
+                Size::Medium => Some(IconSize::Large),
+                Size::Large => Some(IconSize::X2),
+            })
+            .flatten()
+    }) {
         unsafe { i_class.unchecked_push(size.class()) }
     }
 
-    // TODO: id on span vs text span?
-    let icon = html! {
-        <span id={props.id.clone()} class={span_class} onclick={props.on_click.clone()}>
-            <i class={i_class}/>
-        </span>
-    };
-
+    // TODO: id on outer span if text?
     if let Some(text) = &props.text {
         html! {
-            <span class={color}>
+            <span class={color} {style}>
                 <div>
-                    <p>{icon}</p>
+                    <p>
+                        <span {id} class={span_class} {onclick}>
+                            <i class={i_class}/>
+                        </span>
+                    </p>
                     <p>{text}</p>
                 </div>
             </span>
         }
     } else {
-        icon
+        html! {
+            <span {id} class={span_class} {style} {onclick}>
+                <i class={i_class}/>
+            </span>
+        }
     }
 }
 
@@ -236,7 +248,7 @@ pub fn icon(props: &IconProps) -> Html {
 // #[derive(Debug, Default, PartialEq, Clone, Properties)]
 // pub struct PureIconText {
 //     #[prop_or_default]
-//     pub id: Option<Cow<'static, str>>,
+//     pub id: Option<AttrValue>,
 
 //     #[prop_or_default]
 //     pub class: Classes,

@@ -6,13 +6,13 @@ pub type Color = ButtonColor;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct ButtonProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -192,6 +192,11 @@ impl ButtonProps {
 /// Bulma [Button](https://bulma.io/documentation/elements/button/) Element
 #[function_component(Button)]
 pub fn button(props: &ButtonProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
+    let class = props.classes();
+
     let (tag, ty, href) = match &props.tag {
         ButtonType::Anchor { href } => ("a", None, href.as_ref().cloned()),
         ButtonType::Button => ("button", None, None),
@@ -200,19 +205,19 @@ pub fn button(props: &ButtonProps) -> Html {
     };
 
     // let disabled = if props.disabled { Some(true) } else { None };
-    let on_click = props.on_click.as_ref().map(|cb| cb.reform(|_| ()));
+    let onclick = props.on_click.as_ref().map(|cb| cb.reform(|_| ()));
 
     html! {
         <@{tag}
-            id={props.id.clone()}
-            class={props.classes()}
-            style={props.style.clone()}
+            {id}
+            {class}
+            {style}
 
             disabled={props.disabled} // Todo: check if this renders when false
-            onclick={on_click}
+            {onclick}
 
             type={ty}
-            href={href}
+            {href}
         >
             {for props.children.iter()}
         </@>

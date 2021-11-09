@@ -3,13 +3,13 @@ use crate::{innerlude::*, Color};
 #[derive(Debug, Default, PartialEq, Properties)]
 pub struct TextProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -330,6 +330,10 @@ pub enum FontFamily {
 /// Renders as a <span/>, by default, but can be overidden by the `tag` property
 #[function_component(Text)]
 pub fn text(props: &TextProps) -> Html {
+    let tag = props.tag.unwrap_or("span");
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
 
     if let Some(color) = &props.color {
@@ -408,7 +412,7 @@ pub fn text(props: &TextProps) -> Html {
     }
 
     html! {
-        <@{props.tag.unwrap_or("span")} id={props.id.clone()} class={class} style={props.style.clone()}>
+        <@{tag} {id} {class} {style}>
             {for props.children.iter()}
         </@>
     }

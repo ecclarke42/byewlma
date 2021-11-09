@@ -3,13 +3,13 @@ use crate::innerlude::*;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct ContainerProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -48,6 +48,9 @@ pub enum ContainerWidth {
 /// Bulma [Container](https://bulma.io/documentation/layout/container/) Layout Element
 #[function_component(Container)]
 pub fn container(props: &ContainerProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("container");
@@ -58,7 +61,7 @@ pub fn container(props: &ContainerProps) -> Html {
     }
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {for props.children.iter()}
         </div>
     }

@@ -9,13 +9,13 @@ pub type Gap = ColumnGap;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct ColumnsProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: ChildrenWithProps<Column>,
@@ -102,13 +102,13 @@ pub fn columns(props: &ColumnsProps) -> Html {
 #[derive(Debug, PartialEq, Properties)]
 pub struct ColumnProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -235,6 +235,9 @@ pub enum ColumnOffset {
 /// Bulma [Column](https://bulma.io/documentation/columns/) Element
 #[function_component(Column)]
 pub fn column(props: &ColumnProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("column");
@@ -249,7 +252,7 @@ pub fn column(props: &ColumnProps) -> Html {
     }
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {for props.children.iter()}
         </div>
     }

@@ -3,13 +3,13 @@ use crate::innerlude::*;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct SectionProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -34,6 +34,9 @@ impl Default for SectionSize {
 /// Bulma [Section](https://bulma.io/documentation/layout/section/) Layout Element
 #[function_component(Section)]
 pub fn section(props: &SectionProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("section");
@@ -45,7 +48,7 @@ pub fn section(props: &SectionProps) -> Html {
     }
 
     html! {
-        <section id={props.id.clone()} class={class} style={props.style.clone()}>
+        <section {id} {class} {style}>
             {for props.children.iter()}
         </section>
     }

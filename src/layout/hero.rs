@@ -3,13 +3,13 @@ use crate::{innerlude::*, SemanticColor};
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct HeroProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -46,6 +46,9 @@ pub enum HeroSize {
 /// Bulma [Hero](https://bulma.io/documentation/layout/hero/) Layout Element
 #[function_component(Hero)]
 pub fn hero(props: &HeroProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("hero");
@@ -72,7 +75,7 @@ pub fn hero(props: &HeroProps) -> Html {
     };
 
     html! {
-        <section id={props.id.clone()} class={class} style={props.style.clone()}>
+        <section {id} {class} {style}>
             { head }
             <div class="hero-body">
                 {for props.children.iter()}

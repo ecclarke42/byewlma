@@ -3,13 +3,13 @@ use crate::{innerlude::*, SemanticColor, Size};
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct ProgressProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     pub state: ProgressState,
 
@@ -35,6 +35,9 @@ impl Default for ProgressState {
 /// Bulma [Progress](https://bulma.io/documentation/elements/block/) Element
 #[function_component(Progress)]
 pub fn progress(props: &ProgressProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("progress");
@@ -50,18 +53,11 @@ pub fn progress(props: &ProgressProps) -> Html {
 
     match props.state {
         ProgressState::Indeterminate => html! {
-            <progress
-                id={props.id.clone()}
-                class={class}
-                style={props.style.clone()}
-            />
+            <progress {id} {class} {style} />
         },
 
         ProgressState::Value { value, max } => html! {
-            <progress
-                id={props.id.clone()}
-                class={class}
-                style={props.style.clone()}
+            <progress {id} {class} {style}
                 value={value.to_string()}
                 max={max.to_string()}
             >

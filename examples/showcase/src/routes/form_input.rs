@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use byewlma::{
     components::{Subtitle, Title},
     form::{Control, Field, PasswordInput, TextInput},
@@ -18,12 +16,12 @@ pub fn form_input_showcase(_props: &()) -> Html {
 
             <Section>
                 <Subtitle>{"Input Types"}</Subtitle>
-                <Field label={Some(Cow::<'static, str>::from("Text"))}>
+                <Field label={{html!{"Text"}}}>
                     <Control>
                         <TextInput />
                     </Control>
                 </Field>
-                <Field label={Some(Cow::<'static, str>::from("Password"))}>
+                    <Field label={{html!{"Password"}}}>
                     <Control>
                         <PasswordInput />
                     </Control>

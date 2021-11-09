@@ -3,22 +3,22 @@ use crate::{innerlude::*, SemanticColor, Size};
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
 pub struct FieldProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children, // ChildrenWithProps<super::Control>,
 
     #[prop_or_default]
-    pub label: Option<Cow<'static, str>>,
+    pub label: Option<Html>,
 
     #[prop_or_default]
-    pub help: Option<Cow<'static, str>>,
+    pub help: Option<Html>,
     #[prop_or_default]
     pub help_color: Option<SemanticColor>,
 
@@ -66,6 +66,9 @@ impl FieldLayout {
 /// classes
 #[function_component(Field)]
 pub fn field(props: &FieldProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut field_class = props.class.clone();
     unsafe {
         field_class.unchecked_push("field");
@@ -127,13 +130,13 @@ pub fn field(props: &FieldProps) -> Html {
         if let Some(color) = &props.help_color {
             class.add(color);
         }
-        html! { <p class={class}>{help.clone()}</p> }
+        html! { <p {class}>{help.clone()}</p> }
     } else {
         html! {}
     };
 
     html! {
-        <div id={props.id.clone()} class={field_class} style={props.style.clone()}>
+        <div {id} class={field_class} {style}>
             { label }
             { for props.children.iter() }
             { help }

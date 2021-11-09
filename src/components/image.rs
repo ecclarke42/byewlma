@@ -1,17 +1,17 @@
 use crate::innerlude::*;
 
-#[derive(Debug, Default, PartialEq, Clone, Properties)]
+#[derive(Debug, PartialEq, Properties)]
 pub struct ImageProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
-    pub src: String,
+    pub src: AttrValue,
 
     #[prop_or_default]
     pub size: Option<ImageSize>,
@@ -81,6 +81,10 @@ pub enum ImageSize {
 /// Bulma [Image](https://bulma.io/documentation/elements/image/) Element
 #[function_component(Image)]
 pub fn image(props: &ImageProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+    let src = props.src.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("image");
@@ -99,8 +103,8 @@ pub fn image(props: &ImageProps) -> Html {
     }
 
     html! {
-        <figure id={props.id.clone()} class={class} style={props.style.clone()}>
-            <img src={props.src.clone()} />
+        <figure {id} {class} {style}>
+            <img {src} />
         </figure>
     }
 }

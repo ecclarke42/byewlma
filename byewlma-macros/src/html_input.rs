@@ -46,16 +46,16 @@ pub fn transform_stream(
         #[derive(Debug, Clone, PartialEq, Properties)]
         #vis struct #props_name #generics {
             #[prop_or_default]
-            pub id: Option<Cow<'static, str>>,
+            pub id: Option<AttrValue>,
             #[prop_or_default]
             pub class: Classes,
             #[prop_or_default]
-            pub style: Option<Cow<'static, str>>,
+            pub style: Option<AttrValue>,
             #[prop_or_default]
             pub tab_index: Option<i16>,
 
             #[prop_or_default]
-            pub name: Option<Cow<'static, str>>,
+            pub name: Option<AttrValue>,
             #[prop_or_default]
             pub value: Option<#value_type>,
             #[prop_or_default]
@@ -248,7 +248,7 @@ impl HtmlInputAttr {
                 ///
                 /// Must match the `id` of a `<form>` element
                 #[prop_or_default]
-                pub form_id: Option<Cow<'static, str>>,
+                pub form_id: Option<AttrValue>,
             },
 
             InputMode => quote! {
@@ -264,7 +264,7 @@ impl HtmlInputAttr {
                 ///
                 /// See also [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
                 #[prop_or_default]
-                pub datalist_id: Option<Cow<'static, str>>,
+                pub datalist_id: Option<AttrValue>,
             },
 
             Max => quote! {
@@ -300,13 +300,13 @@ impl HtmlInputAttr {
             Pattern => quote! {
                 /// The [`pattern`]((https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-pattern) attribute
                 #[prop_or_default]
-                pub pattern: Option<Cow<'static, str>>,
+                pub pattern: Option<AttrValue>,
             },
 
             Placeholder => quote! {
                 /// The [`placeholder`]((https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute
                 #[prop_or_default]
-                pub placeholder: Option<Cow<'static, str>>,
+                pub placeholder: Option<AttrValue>,
             },
 
             Required => quote! {

@@ -5,13 +5,13 @@ use crate::{innerlude::*, SemanticColor, Size};
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
 pub struct TextAreaProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     // TODO: tab_index
     // TODO: name
@@ -37,7 +37,7 @@ pub struct TextAreaProps {
     pub size: Option<Size>,
 
     #[prop_or_default]
-    pub placeholder: Option<Cow<'static, str>>,
+    pub placeholder: Option<AttrValue>,
 
     #[prop_or_default]
     pub force_hover: bool,
@@ -58,6 +58,12 @@ pub struct TextAreaProps {
 
 #[function_component(TextArea)]
 pub fn text_area(props: &TextAreaProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+    let value = props.value.clone();
+    let rows = props.rows.map(|rows| AttrValue::Owned(rows.to_string()));
+    let placeholder = props.placeholder.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("textarea");
@@ -81,14 +87,14 @@ pub fn text_area(props: &TextAreaProps) -> Html {
         }
     }
 
-    let on_input = props.on_input.as_ref().map(|cb| {
+    let oninput = props.on_input.as_ref().map(|cb| {
         cb.reform(|evt: InputEvent| {
             evt.target_unchecked_into::<web_sys::HtmlTextAreaElement>()
                 .value()
         })
     });
 
-    let on_change = props.on_change.as_ref().map(|cb| {
+    let onchange = props.on_change.as_ref().map(|cb| {
         cb.reform(|evt: Event| {
             evt.target_unchecked_into::<web_sys::HtmlTextAreaElement>()
                 .value()
@@ -96,21 +102,9 @@ pub fn text_area(props: &TextAreaProps) -> Html {
     });
 
     html! {
-        <textarea
-            id={props.id.clone()}
-            class={class}
-            style={props.style.clone()}
-
-            value={props.value.clone()}
-            oninput={on_input}
-            onchange={on_change}
-
-            rows={props.rows.map(|rows| rows.to_string())}
-            placeholder={props.placeholder.clone()}
-
+        <textarea {id} {class} {style} {value} {oninput} {onchange} {rows} {placeholder}
             disabled={props.is_disabled}
             readonly={props.is_readonly}
-
         />
     }
 }

@@ -4,17 +4,17 @@ use crate::innerlude::*;
 pub struct CheckboxProps {
     /// Id for the wrapping label
     #[prop_or_default]
-    pub label_id: Option<Cow<'static, str>>,
+    pub label_id: Option<AttrValue>,
 
     /// Id for the input element itself
     #[prop_or_default]
-    pub input_id: Option<Cow<'static, str>>,
+    pub input_id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -33,14 +33,20 @@ pub struct CheckboxProps {
 
 #[function_component(Checkbox)]
 pub fn checkbox(props: &CheckboxProps) -> Html {
-    let callback = props.on_toggled.clone().map(|cb| cb.reform(|_| ()));
+    let label_id = props.label_id.clone();
+    let label_style = props.style.clone();
+    let input_id = props.input_id.clone();
+
+    let onclick = props.on_toggled.as_ref().map(|cb| cb.reform(|_| ()));
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("checkbox");
     }
+
     html! {
-        <label id={props.label_id.clone()} class={class} style={props.style.clone()} >
-            <input id={props.input_id.clone()} type="checkbox" checked={props.is_checked} disabled={props.is_disabled} onclick={callback} />
+        <label id={label_id} {class} style={label_style} >
+            <input id={input_id} type="checkbox" checked={props.is_checked} disabled={props.is_disabled} {onclick} />
             { props.children.clone() }
         </label>
     }

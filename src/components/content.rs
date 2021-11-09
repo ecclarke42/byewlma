@@ -3,13 +3,13 @@ use crate::{helpers::Size, innerlude::*};
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct ContentProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -21,6 +21,9 @@ pub struct ContentProps {
 /// Bulma [Content](https://bulma.io/documentation/elements/content/) Element
 #[function_component(Content)]
 pub fn content(props: &ContentProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe { class.unchecked_push("content") }
 
@@ -29,7 +32,7 @@ pub fn content(props: &ContentProps) -> Html {
     }
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {for props.children.iter()}
         </div>
     }

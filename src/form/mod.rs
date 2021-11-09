@@ -28,13 +28,13 @@ use yew::virtual_dom::VNode;
 // #[derive(Debug, Default, Clone, PartialEq, Properties)]
 // pub struct PureHorizontalForm {
 //     #[prop_or_default]
-//     pub id: Option<Cow<'static, str>>,
+//     pub id: Option<AttrValue>,
 
 //     #[prop_or_default]
 //     pub class: Classes,
 
 //     #[prop_or_default]
-//     pub style: Option<Cow<'static, str>>,
+//     pub style: Option<AttrValue>,
 
 //     #[prop_or_default]
 //     pub children: ChildrenWithProps<HorizontalFormRow>,
@@ -49,20 +49,19 @@ use yew::virtual_dom::VNode;
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
 pub struct FormRowProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
 
     // TODO: split label to separate component?
     #[prop_or_default]
-    // pub label: Option<Cow<'static, str>>,
     pub label: Option<FormLabel>,
 
     #[prop_or_default]
@@ -71,6 +70,9 @@ pub struct FormRowProps {
 
 #[function_component(FormRow)]
 pub fn form_row(props: &FormRowProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let label = if let Some(label) = &props.label {
         let mut label_class = classes!("field-label");
         if let Some(size) = props.label_size {
@@ -92,10 +94,10 @@ pub fn form_row(props: &FormRowProps) -> Html {
     }
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {label}
             <div class="field-body">
-                { for props.children.clone() }
+                { for props.children.iter() }
             </div>
         </div>
     }

@@ -13,7 +13,7 @@
 //!     - submit: Use the `Button` component with ButtonType::Submit
 //!     - reset: Use the `Button` component with ButtonType::Reset
 
-use std::{borrow::Cow, str::FromStr};
+use std::str::FromStr;
 
 use byewlma_macros::html_input;
 use chrono::Datelike;
@@ -23,13 +23,13 @@ use crate::innerlude::*;
 
 pub trait InputValue {
     type Result;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str>;
+    fn to_input_value(&self) -> AttrValue;
     fn from_input_value(value: String) -> Self::Result;
 }
 
 impl InputValue for String {
     type Result = Self;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.clone().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -39,7 +39,7 @@ impl InputValue for String {
 
 impl InputValue for i32 {
     type Result = Result<Self, std::num::ParseIntError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.to_string().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -48,7 +48,7 @@ impl InputValue for i32 {
 }
 impl InputValue for u32 {
     type Result = Result<Self, std::num::ParseIntError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.to_string().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -58,7 +58,7 @@ impl InputValue for u32 {
 
 impl InputValue for f32 {
     type Result = Result<Self, std::num::ParseFloatError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.to_string().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -373,7 +373,7 @@ pub struct ColorInput;
 pub type ColorValue = palette::Srgb<u8>;
 impl InputValue for ColorValue {
     type Result = Result<Self, palette::rgb::FromHexError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         format!("#{:x}", self).into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -406,7 +406,7 @@ pub type DateResult = Result<DateValue, DateError>;
 const JS_DATE_FMT: &str = "%F"; // ISO 8601, same as "%Y-%m-%d"
 impl InputValue for DateValue {
     type Result = DateResult;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.format(JS_DATE_FMT).to_string().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -436,7 +436,7 @@ pub type DateTimeValue = chrono::NaiveDateTime;
 const JS_DATETIME_FMT: &str = "%Y-%m-%dT%H:%M";
 impl InputValue for DateTimeValue {
     type Result = Result<Self, chrono::ParseError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.format(JS_DATETIME_FMT).to_string().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -490,7 +490,7 @@ pub struct MonthValue(chrono::Month, i32);
 // const JS_MONTH_FMT: &str = "%Y-%m";
 impl InputValue for MonthValue {
     type Result = Result<Self, MonthParseError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         format!("{}-{}", self.1, self.0.number_from_month()).into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -531,7 +531,7 @@ pub struct PositiveIntegerInput;
 pub type PositiveIntegerResult = Result<u32, std::num::ParseIntError>;
 // impl InputValue for PositiveIntegerInput {
 //     type Result = Result<Self, std::num::ParseIntError>;
-//     fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+//     fn to_input_value(&self) -> AttrValue {
 
 //     }
 //     // fn from_input_value(value: String) -> Self::Result {
@@ -645,7 +645,7 @@ pub type TimeValue = chrono::NaiveTime;
 const JS_TIME_FMT: &str = "%H:%M";
 impl InputValue for TimeValue {
     type Result = Result<Self, chrono::ParseError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         self.format(JS_TIME_FMT).to_string().into()
     }
     fn from_input_value(value: String) -> Self::Result {
@@ -691,7 +691,7 @@ pub type WeekValue = chrono::IsoWeek;
 // const JS_WEEK_FMT: &str = "%Y-W%U";
 impl InputValue for WeekValue {
     type Result = Result<Self, WeekParseError>;
-    fn to_input_value(&self) -> std::borrow::Cow<'static, str> {
+    fn to_input_value(&self) -> AttrValue {
         format!("{}-W{}", self.year(), self.week()).into()
     }
     fn from_input_value(value: String) -> Self::Result {

@@ -3,13 +3,13 @@ use crate::{innerlude::*, SemanticOrLightColor};
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct NotificationProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -29,6 +29,9 @@ pub struct NotificationProps {
 /// Bulma [Notification](https://bulma.io/documentation/elements/notification/) Element
 #[function_component(Notification)]
 pub fn notification(props: &NotificationProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("notification");
@@ -54,7 +57,7 @@ pub fn notification(props: &NotificationProps) -> Html {
     };
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             { close_button }
             { for props.children.iter() }
         </div>

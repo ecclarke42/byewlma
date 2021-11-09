@@ -3,13 +3,13 @@ use crate::innerlude::*;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct TitleProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>, // TODO: byewma macros ByewlmaProps for id, class, style, children?
+    pub id: Option<AttrValue>, // TODO: byewma macros ByewlmaProps for id, class, style, children?
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -24,13 +24,13 @@ pub struct TitleProps {
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct SubtitleProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -69,6 +69,9 @@ impl TitleLevel {
 /// Bulma [Title](https://bulma.io/documentation/elements/title/) Element
 #[function_component(Title)]
 pub fn title(props: &TitleProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     class.push("title");
 
@@ -81,7 +84,7 @@ pub fn title(props: &TitleProps) -> Html {
     }
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {for props.children.iter()}
         </div>
     }
@@ -90,6 +93,9 @@ pub fn title(props: &TitleProps) -> Html {
 /// Bulma [Subtitle](https://bulma.io/documentation/elements/title/) Element
 #[function_component(Subtitle)]
 pub fn subtitle(props: &SubtitleProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     class.push("subtitle");
 
@@ -98,7 +104,7 @@ pub fn subtitle(props: &SubtitleProps) -> Html {
     }
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {for props.children.iter()}
         </div>
     }

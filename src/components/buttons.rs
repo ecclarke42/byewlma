@@ -7,13 +7,13 @@ use crate::innerlude::*;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct ButtonsProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: ChildrenWithProps<crate::components::Button>,
@@ -42,6 +42,9 @@ impl Default for ButtonsAlignment {
 /// Bulma [List of Buttons](https://bulma.io/documentation/elements/button/#list-of-buttons)
 #[function_component(Buttons)]
 pub fn buttons(props: &ButtonsProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     class.push("buttons");
 
@@ -62,7 +65,7 @@ pub fn buttons(props: &ButtonsProps) -> Html {
     // TODO: is-selected
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             {for props.children.iter()}
         </div>
     }

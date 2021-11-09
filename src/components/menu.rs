@@ -3,14 +3,14 @@ use crate::innerlude::*;
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     /// Css Classes to pass along to the root menu element
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: ChildrenWithProps<MenuSection>,
@@ -21,15 +21,18 @@ pub struct MenuProps {
 /// A menu is used to wrap any number of MenuSection's
 #[function_component(Menu)]
 pub fn menu(props: &MenuProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     class.push("menu");
-    html! { <aside id={props.id.clone()} class={class} style={props.style.clone()}>{ for props.children.iter() }</aside> }
+    html! { <aside {id} {class} {style}>{ for props.children.iter() }</aside> }
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuSectionProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     /// Css Classes to pass along to the menu section's <ul> list
     /// Classes can be directly passed to the label element when creating it
@@ -37,7 +40,7 @@ pub struct MenuSectionProps {
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub label: Option<Html>,
@@ -66,6 +69,9 @@ pub fn menu_section(props: &MenuSectionProps) -> Html {
     } else {
         html! {}
     };
+
+    // TODO: Id/style/etc
+
     html! {
         <>
             { label }
@@ -77,13 +83,13 @@ pub fn menu_section(props: &MenuSectionProps) -> Html {
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct MenuItemProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub is_active: bool,
@@ -98,7 +104,7 @@ pub struct MenuItemProps {
 pub enum MenuItemAction {
     Click(Callback<()>),
 
-    Link(Cow<'static, str>),
+    Link(AttrValue),
 
     None,
 }
@@ -115,6 +121,11 @@ impl Default for MenuItemAction {
 /// supports two levels of nesting, but it seems to work deeper.
 #[function_component(MenuItem)]
 pub fn menu_item(props: &MenuItemProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
+    let class = props.class.clone();
+
     let children = if !props.children.is_empty() {
         html! { <ul>{ for props.children.iter() }</ul> }
     } else {
@@ -122,7 +133,7 @@ pub fn menu_item(props: &MenuItemProps) -> Html {
     };
 
     html! {
-        <li id={props.id.clone()} class={props.class.clone()} style={props.style.clone()}>
+        <li {id} {class} {style}>
             <a class={classes!(if props.is_active { "is-active" } else { "" })}>
                 { props.label.clone() }
             </a>

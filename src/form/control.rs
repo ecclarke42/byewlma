@@ -9,7 +9,7 @@ use crate::{
 #[derive(Debug, Default, Clone, PartialEq, Properties)]
 pub struct ControlProps {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
@@ -18,7 +18,7 @@ pub struct ControlProps {
     // #[prop_or_default]
     // pub tag: Option<Cow<'static, str>>,
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     // TODO: should only be one?
     #[prop_or_default]
@@ -39,6 +39,9 @@ pub struct ControlProps {
 /// Bulma [Control](https://bulma.io/documentation/form/general/) Element
 #[function_component(Control)]
 pub fn control(props: &ControlProps) -> Html {
+    let id = props.id.clone();
+    let style = props.style.clone();
+
     let mut class = props.class.clone();
     unsafe {
         class.unchecked_push("control");
@@ -79,7 +82,7 @@ pub fn control(props: &ControlProps) -> Html {
     };
 
     html! {
-        <div id={props.id.clone()} class={class} style={props.style.clone()}>
+        <div {id} {class} {style}>
             { for props.children.iter() }
             { left_icon }
             { right_icon }

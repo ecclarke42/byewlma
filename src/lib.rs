@@ -1,18 +1,14 @@
 #[macro_use]
 mod util {
-
     #[macro_use]
     pub mod class;
-
-    #[macro_use]
-    pub mod pure_wrapper;
 }
 
 mod innerlude {
-    pub(crate) use std::borrow::Cow;
+    pub use std::borrow::Cow;
 
-    pub(crate) use byewlma_macros::BulmaClass;
-    pub(crate) use yew::prelude::*;
+    pub use byewlma_macros::BulmaClass;
+    pub use yew::{prelude::*, virtual_dom::AttrValue};
 
     pub(crate) use crate::util::class::{AddClass, BulmaClass};
 }
@@ -42,7 +38,7 @@ pub mod components {
     // TODO: pub mod pagination;
     // TODO: pub mod panel;
     pub mod progress;
-    // TODO: pub mod table;
+    // pub mod table;
     // TODO: pub mod tabs;
     // TODO: pub mod tag;
     pub mod title;
