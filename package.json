@@ -3,7 +3,7 @@
   "repository": {
     "url": "https://github.com/ecclarke42/byewlma"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Styles for the byelma Rust crate",
   "author": {
     "name": "Elliott Clarke",

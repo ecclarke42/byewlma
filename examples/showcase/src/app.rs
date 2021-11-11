@@ -88,48 +88,51 @@ struct AppMenuProps {
 fn app_menu(props: &AppMenuProps) -> Html {
     html! {
         // TODO: navbar
+        // TODO: Stabilize menu
         <Menu>
-            <MenuSection label={html!("Layout")}>
-                <MenuItem
-                    is_active={props.active_route == Route::LayoutColumns}
-                    label={html!(<RouteAnchor route={Route::LayoutColumns}>{"Columns"}</RouteAnchor>)}
-                />
-                <MenuItem
-                    is_active={props.active_route == Route::LayoutContainer}
-                    label={html!(<RouteAnchor route={Route::LayoutContainer}>{"Container"}</RouteAnchor>)}
-                />
-                <MenuItem
-                    is_active={props.active_route == Route::LayoutFooter}
-                    label={html!(<RouteAnchor route={Route::LayoutFooter}>{"Footer"}</RouteAnchor>)}
-                />
-                <MenuItem
-                    is_active={props.active_route == Route::LayoutHero}
-                    label={html!(<RouteAnchor route={Route::LayoutHero}>{"Hero"}</RouteAnchor>)}
-                />
-                <MenuItem
-                    is_active={props.active_route == Route::LayoutLevel}
-                    label={html!(<RouteAnchor route={Route::LayoutLevel}>{"Level"}</RouteAnchor>)}
-                />
-                <MenuItem
-                    is_active={props.active_route == Route::LayoutSection}
-                    label={html!(<RouteAnchor route={Route::LayoutSection}>{"Section"}</RouteAnchor>)}
-                />
-            </MenuSection>
-            <MenuSection label={html!("Components")}>
-                <MenuItem
-                    is_active={props.active_route == Route::Button}
-                    label={html!(<RouteAnchor route={Route::Button}>{"Button"}</RouteAnchor>)}
-                />
-            </MenuSection>
-            <MenuSection label={html!("Form")}>
-                <MenuItem
-                    is_active={props.active_route == Route::FormInput}
-                    label={html!(<RouteAnchor route={Route::FormInput}>{"Input"}</RouteAnchor>)}
-                />
-            </MenuSection>
-            <MenuSection label={html!("Helpers")}>
+            // <MenuSection label={html!("Layout")}>
+                // <MenuItem
+                //     label={"Columns"}
 
-            </MenuSection>
+                //     is_active={props.active_route == Route::LayoutColumns}
+                //     // label={html!(<RouteAnchor route={Route::LayoutColumns}>{"Columns"}</RouteAnchor>)}
+                // />
+                // <MenuItem
+                //     is_active={props.active_route == Route::LayoutContainer}
+                //     label={html!(<RouteAnchor route={Route::LayoutContainer}>{"Container"}</RouteAnchor>)}
+                // />
+                // <MenuItem
+                //     is_active={props.active_route == Route::LayoutFooter}
+                //     label={html!(<RouteAnchor route={Route::LayoutFooter}>{"Footer"}</RouteAnchor>)}
+                // />
+                // <MenuItem
+                //     is_active={props.active_route == Route::LayoutHero}
+                //     label={html!(<RouteAnchor route={Route::LayoutHero}>{"Hero"}</RouteAnchor>)}
+                // />
+                // <MenuItem
+                //     is_active={props.active_route == Route::LayoutLevel}
+                //     label={html!(<RouteAnchor route={Route::LayoutLevel}>{"Level"}</RouteAnchor>)}
+                // />
+                // <MenuItem
+                //     is_active={props.active_route == Route::LayoutSection}
+                //     label={html!(<RouteAnchor route={Route::LayoutSection}>{"Section"}</RouteAnchor>)}
+                // />
+            // </MenuSection>
+            // <MenuSection label={html!("Components")}>
+            //     <MenuItem
+            //         is_active={props.active_route == Route::Button}
+            //         label={html!(<RouteAnchor route={Route::Button}>{"Button"}</RouteAnchor>)}
+            //     />
+            // </MenuSection>
+            // <MenuSection label={html!("Form")}>
+            //     <MenuItem
+            //         is_active={props.active_route == Route::FormInput}
+            //         label={html!(<RouteAnchor route={Route::FormInput}>{"Input"}</RouteAnchor>)}
+            //     />
+            // </MenuSection>
+            // <MenuSection label={html!("Helpers")}>
+
+            // </MenuSection>
         </Menu>
     }
 }

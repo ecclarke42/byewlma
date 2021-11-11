@@ -10,13 +10,13 @@ pub type SplitLevel = Pure<PureSplitLevel>;
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct PureSplitLevel {
     #[prop_or_default]
-    pub id: Option<Cow<'static, str>>,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
     pub class: Classes,
 
     #[prop_or_default]
-    pub style: Option<Cow<'static, str>>,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: ChildrenRenderer<LevelChild>,

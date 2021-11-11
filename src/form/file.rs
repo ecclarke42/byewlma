@@ -1,9 +1,9 @@
-use crate::innerlude::*;
-
 use gloo::file::File;
 use wasm_bindgen::UnwrapThrowExt;
 use web_sys::{Event, HtmlInputElement};
 use yew::TargetCast;
+
+use crate::innerlude::*;
 
 #[derive(Debug, Default, PartialEq, Clone, Properties)]
 pub struct FileInputProps {
@@ -57,8 +57,8 @@ pub struct FileInputProps {
     pub is_disabled: bool,
     #[prop_or_default]
     pub is_readonly: bool,
-    // #[prop_or_default]
-    // pub is_static: bool,
+    /* #[prop_or_default]
+     * pub is_static: bool, */
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

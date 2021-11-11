@@ -38,7 +38,7 @@ pub mod components {
     // TODO: pub mod pagination;
     // TODO: pub mod panel;
     pub mod progress;
-    // pub mod table;
+    pub mod table;
     // TODO: pub mod tabs;
     // TODO: pub mod tag;
     pub mod title;

@@ -1,6 +1,7 @@
-use super::properties::{Color, Position, Size};
 use gloo::timers::callback::Timeout;
 use yew::prelude::*;
+
+use super::properties::{Color, Position, Size};
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct NotificationProps {
