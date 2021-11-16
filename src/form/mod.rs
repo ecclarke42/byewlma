@@ -6,6 +6,7 @@ pub mod field;
 pub mod file;
 pub mod input;
 pub mod radio;
+pub mod select;
 pub mod textarea;
 pub mod controls {
     // pub mod password_control;
