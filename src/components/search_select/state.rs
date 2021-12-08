@@ -13,8 +13,8 @@ pub enum Filtered {
 }
 
 /// Internal state is wrapped in an Arc, so cloning this is not very expensive
-pub struct SelectState<T> {
-    pub options: Arc<[T]>,
+pub struct SelectState<T, Opts: ?Sized> {
+    pub options: Arc<Opts>,
     pub(super) selected_indices: Arc<RwLock<Selection>>,
     pub(super) filtered_indices: Arc<RwLock<Filtered>>,
 
@@ -22,7 +22,19 @@ pub struct SelectState<T> {
     filter_input: Arc<RwLock<Option<String>>>,
 }
 
-impl<T> Clone for SelectState<T> {
+// pub trait SelectOptions<T> {
+//     get_at(&self, index: usize)
+// }
+
+// impl<T, O> SelectOptions<T> for O where O: std::ops::Deref<Target = [T]> {
+
+// }
+
+// impl <K, T> SelectOptions<T> for std::collections::HashMap<K, T> {
+
+// }
+
+impl<T, Opts> Clone for SelectState<T, Opts> {
     fn clone(&self) -> Self {
         Self {
             options: self.options.clone(),
@@ -34,7 +46,7 @@ impl<T> Clone for SelectState<T> {
     }
 }
 
-impl<T> PartialEq for SelectState<T> {
+impl<T, Opts> PartialEq for SelectState<T, Opts> {
     fn eq(&self, other: &Self) -> bool {
         Arc::ptr_eq(&self.options, &other.options)
             && Arc::ptr_eq(&self.selected_indices, &other.selected_indices)
@@ -44,9 +56,9 @@ impl<T> PartialEq for SelectState<T> {
     }
 }
 
-impl<T> SelectState<T> {
+impl<T, Opts: std::ops::Deref<Target = [T]>> SelectState<T, Opts> {
     // TODO: make filter optional?
-    pub fn new<I: Into<Arc<[T]>>, F: Into<SelectFilter<T>>>(
+    pub fn new<I: Into<Arc<Opts>>, F: Into<SelectFilter<T>>>(
         options: I,
         selection: Selection,
         filter_fn: F,
@@ -81,7 +93,7 @@ impl<T> SelectState<T> {
 
     /// Replace the option set. You should probably use
     /// `replace_options_reselecting`
-    pub async fn replace_options<I: Into<Arc<[T]>>>(&mut self, options: I) {
+    pub async fn replace_options<I: Into<Arc<Opts>>>(&mut self, options: I) {
         if let Ok(mut inner) = self.selected_indices.write() {
             match *inner {
                 Selection::MaybeOne(_) => *inner = Selection::none(),
@@ -96,12 +108,12 @@ impl<T> SelectState<T> {
     /// Replace the existing options and attempt to reeselect the existing
     /// selections (if `Selection::AlwaysOne`, it will default to index 0 if
     /// not found)
-    pub async fn replace_options_reselecting<I: Into<Arc<[T]>>, F: Fn(&T, &T) -> bool>(
+    pub async fn replace_options_reselecting<I: Into<Arc<Opts>>, F: Fn(&T, &T) -> bool>(
         &mut self,
         options: I,
         selection_eq: F,
     ) {
-        let new_options: Arc<[T]> = options.into();
+        let new_options: Arc<Opts> = options.into();
         if let Ok(mut inner) = self.selected_indices.write() {
             match *inner {
                 Selection::MaybeOne(None) => {} // Do nothing
@@ -229,6 +241,18 @@ impl<T> SelectState<T> {
         }
 
         None
+    }
+
+    pub fn selected_indices(&self) -> Vec<usize> {
+        if let Ok(selected) = self.selected_indices.read() {
+            match *selected {
+                Selection::MaybeOne(None) => Vec::new(),
+                Selection::AlwaysOne(index) | Selection::MaybeOne(Some(index)) => vec![index],
+                Selection::Multiple(ref set) => set.iter().copied().collect(),
+            }
+        } else {
+            Vec::new()
+        }
     }
 
     pub fn selected_items(&self) -> Vec<(usize, &T)> {

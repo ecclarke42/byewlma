@@ -18,7 +18,7 @@ pub struct ColumnsProps {
     pub style: Option<AttrValue>,
 
     #[prop_or_default]
-    pub children: ChildrenWithProps<Column>,
+    pub children: Children, //ChildrenWithProps<Column>,
 
     #[prop_or_default]
     pub gap: Option<ColumnGap>,

@@ -8,17 +8,18 @@ mod wrappers;
 pub use wrappers::{SelectDisplay, SelectFilter};
 
 /// Bulma-based selection box
-/// TODO: document
-pub struct Select<T: 'static> {
+/// TODO:
+pub struct Select<T: 'static, O> {
     focused: bool,
     selection_index: usize,
     search_text: String,
 
     _ty: std::marker::PhantomData<T>,
+    _collection: std::marker::PhantomData<O>,
 }
 
 #[derive(Properties)]
-pub struct SelectProps<T> {
+pub struct SelectProps<T, Opts> {
     /// Omit selected items from the dropdown list (if false, selected will be
     /// highlighted).
     #[prop_or_default]
@@ -32,7 +33,7 @@ pub struct SelectProps<T> {
     #[prop_or(true)]
     pub display_selected: bool,
 
-    pub state: SelectState<T>,
+    pub state: SelectState<T, Opts>,
     pub display: SelectDisplay<T>,
 
     #[prop_or_default]
@@ -52,7 +53,7 @@ pub struct SelectProps<T> {
 
 // This SHOULD be the auto impl, but for some reason that thinks that T needs to
 // be Clone
-impl<T> Clone for SelectProps<T> {
+impl<T, O> Clone for SelectProps<T, O> {
     fn clone(&self) -> Self {
         Self {
             omit_selected: self.omit_selected,
@@ -72,7 +73,7 @@ impl<T> Clone for SelectProps<T> {
     }
 }
 
-impl<T> PartialEq for SelectProps<T> {
+impl<T, O> PartialEq for SelectProps<T, O> {
     fn eq(&self, other: &Self) -> bool {
         self.readonly == other.readonly && self.disabled == other.disabled && self.loading == other.loading &&
             self.state == other.state
@@ -100,8 +101,8 @@ pub enum Msg {
     KeyPress(KeyboardEvent),
 }
 
-impl<T: 'static> Component for Select<T> {
-    type Properties = SelectProps<T>;
+impl<T: 'static, O: std::ops::Deref<Target = [T]> + 'static> Component for Select<T, O> {
+    type Properties = SelectProps<T, O>;
     type Message = Msg;
 
     fn create(_ctx: &Context<Self>) -> Self {
@@ -110,7 +111,8 @@ impl<T: 'static> Component for Select<T> {
             selection_index: 0,
             search_text: String::new(),
 
-            _ty: Default::default(),
+            _ty: std::marker::PhantomData::default(),
+            _collection: std::marker::PhantomData::default(),
         }
     }
 
@@ -314,7 +316,7 @@ impl<T: 'static> Component for Select<T> {
     }
 }
 
-impl<T> Select<T> {
+impl<T, O: std::ops::Deref<Target = [T]> + 'static> Select<T, O> {
     fn view_single(&self, ctx: &Context<Self>) -> Html {
         let props = ctx.props();
         let link = ctx.link();

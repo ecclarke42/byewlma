@@ -24,9 +24,9 @@ impl std::fmt::Display for Data {
 pub struct App {
     select_display: SelectDisplay<Data>,
 
-    a_data: SelectState<Data>,
-    b_data: SelectState<Data>,
-    c_data: SelectState<Data>,
+    a_data: SelectState<Data, Vec<Data>>,
+    b_data: SelectState<Data, Vec<Data>>,
+    c_data: SelectState<Data, Vec<Data>>,
 }
 
 pub enum Msg {
@@ -104,7 +104,7 @@ impl Component for App {
                 <div class="field">
                     <label class="label">{"Select Single, Non-Nullable Field"}</label>
                     <div class="control">
-                        <Select<Data>
+                        <Select<Data, Vec<Data>>
                             state={self.a_data.clone()}
                             display={self.select_display.clone()}
                             onselected={link.callback(Msg::SelectedA)}
@@ -114,7 +114,7 @@ impl Component for App {
                 <div class="field">
                     <label class="label">{"Select Single, Nullable Field"}</label>
                     <div class="control">
-                        <Select<Data>
+                        <Select<Data, Vec<Data>>
                             state={self.b_data.clone()}
                             display={self.select_display.clone()}
                             onselected={link.callback(Msg::SelectedB)}
@@ -124,7 +124,7 @@ impl Component for App {
                 <div class="field">
                     <label class="label">{"Select Multiple Fields"}</label>
                     <div class="control">
-                        <Select<Data>
+                        <Select<Data, Vec<Data>>
                             state={self.c_data.clone()}
                             display={self.select_display.clone()}
                             onselected={link.callback(Msg::SelectedC)}
@@ -135,7 +135,7 @@ impl Component for App {
                 <div class="field">
                     <label class="label">{"Select Multiple Fields (Clone, omit selections from options)"}</label>
                     <div class="control">
-                        <Select<Data>
+                        <Select<Data, Vec<Data>>
                             omit_selected={true}
                             state={self.c_data.clone()}
                             display={self.select_display.clone()}
